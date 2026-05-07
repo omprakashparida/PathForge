@@ -53,8 +53,15 @@ export const handleLogin = async (req, res) => {
       );
         return res.status(200).json({
             message:'User Logged In',
+            token,
         });
     
 
   };
-
+  
+  export const getProfile = (req, res) => {
+    res.status(200).json({
+      message: 'Protected route accessed successfully',
+      user: req.user,
+    });
+  };
