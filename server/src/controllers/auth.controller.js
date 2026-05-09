@@ -15,7 +15,7 @@ if(password.length<8){
 
 const existingUser = await User.findOne({email});
 if (existingUser){
-    return res.send("User Already Exists");
+  return res.status(400).json({ message: "User Already Exists" });
 }
 const hashedPassword = await bcrypt.hash(password,10);
 
@@ -24,7 +24,9 @@ name,
 email,
 password : hashedPassword,
 });
-res.send("New User Created Sucessfully!!!!")
+return res.status(201).json({
+  message: 'New user created successfully',
+});
 };
 
 export const handleLogin = async (req, res) => {
@@ -42,7 +44,7 @@ export const handleLogin = async (req, res) => {
         })
     }
 
-    const token = jwt.sign(
+    const refreshToken = jwt.sign(
         {
           userId: user._id,
         },
@@ -51,17 +53,81 @@ export const handleLogin = async (req, res) => {
           expiresIn: '7d',
         }
       );
+        
+    const accessToken = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '15m',
+      }
+      );
+      user.refreshToken = refreshToken;
+      await user.save();
+
         return res.status(200).json({
             message:'User Logged In',
-            token,
+            refreshToken,
+            accessToken,
         });
     
 
   };
   
-  export const getProfile = (req, res) => {
-    res.status(200).json({
-      message: 'Protected route accessed successfully',
-      user: req.user,
+
+   export const refreshAccessToken = async (req,res)=>{
+    const {refreshToken} = req.body;
+    if(!refreshToken){
+      return res.status(401).json({
+        message:'Invalid Token',
+      });
+    }
+    try{
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_SECRET
+    );
+    const user = await User.findById(decoded.userId);
+    if(!user || user.refreshToken!==refreshToken){
+      return res.status(401).json({
+        message:'invalid refresh token',
+      });
+    }
+    const newAccessToken = jwt.sign(
+      {
+        userId : user._id,
+      },
+        process.env.JWT_SECRET,
+      
+      {
+        expiresIn : '15m',
+      }
+    );
+    return res.status(200).json({
+      accessToken:newAccessToken,
+    });
+
+    
+    }catch(error){
+      return res.status(401).json({
+        message:'Invalid or expired token',
+      });
+    }
+
+   };
+
+
+
+
+
+
+  export const getProfile = async(req, res) => {
+    const user = await User.findById(req.user.userId);
+
+    return res.status(200).json({
+      name : user.name,
+      email: user.email,
     });
   };
+
