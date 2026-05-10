@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.routes.js';
 import profileRoutes from './routes/profile.routes.js';
+import roadmapRoutes from './routes/roadmap.routes.js';
 
 dotenv.config();
 
@@ -42,3 +43,4 @@ app.get('/',(req,res)=>{
 });
 
 app.use('/api/profile', profileRoutes);
+app.use('/api/roadmap', roadmapRoutes);
