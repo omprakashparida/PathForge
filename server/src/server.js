@@ -7,6 +7,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.routes.js';
+import profileRoutes from './routes/profile.routes.js';
 
 dotenv.config();
 
@@ -40,3 +41,4 @@ app.get('/',(req,res)=>{
     res.send('Server is running');
 });
 
+app.use('/api/profile', profileRoutes);
