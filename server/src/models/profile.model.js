@@ -46,6 +46,15 @@ const profileSchema = new mongoose.Schema(
             type: String,
             required: true,
           },
+          streak: {
+            type: Number,
+            default: 0,
+          },
+          
+          lastCompletedDate: {
+            type: Date,
+            default: null,
+          },
 
     },
     {
