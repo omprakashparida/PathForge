@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -18,9 +19,11 @@ function Login() {
   };
 
   const handleLogin = async (e) => {
+
     e.preventDefault();
 
     try {
+
       const response = await axios.post(
         'http://localhost:5000/api/auth/login',
         formData
@@ -36,21 +39,46 @@ function Login() {
         response.data.refreshToken
       );
 
-      alert('Login Successful');
+      const token = response.data.accessToken;
 
-      navigate('/dashboard');
+      try {
+
+        const profileResponse = await axios.get(
+          'http://localhost:5000/api/profile',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (profileResponse.data.profile) {
+          navigate('/dashboard');
+        }
+
+      } catch (error) {
+
+        if (error.response.status === 404) {
+          navigate('/profile');
+        } else {
+          alert('Something went wrong');
+        }
+      }
 
     } catch (error) {
+
       alert(error.response.data.message);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+
       <form
         onSubmit={handleLogin}
         className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
       >
+
         <h1 className="text-3xl font-bold mb-6 text-center">
           Login
         </h1>
@@ -79,7 +107,9 @@ function Login() {
         >
           Login
         </button>
+
       </form>
+
     </div>
   );
 }

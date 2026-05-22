@@ -1,56 +1,71 @@
-import User from "../models/user.model";
-import Profile from "../models/profile.model";
-import Roadmap from "../models/roadmap.model";
+import User from "../models/user.model.js";
+import Profile from "../models/profile.model.js";
+import Roadmap from "../models/roadmap.model.js";
 
-export const getDashboardSumaary = async (req, res) => {
+export const getDashboardSummary = async (req, res) => {
     try {
         const userId = req.user.userId;
         const user = await User.findById(userId);
         const profile = await Profile.findOne({ userId });
         const roadmap = await Roadmap.findOne({ userId });
 
-        if (!user || !profile || !roadmap) {
+        // If the core user account doesn't exist, exit early
+        if (!user) {
             return res.status(404).json({
-                message: 'Dashboard Data not found',
+                message: 'User account not found',
             });
         }
-        let currentTask = 0;
-        let completedTask = 0;
+
+        // Initialize our default layout metrics
+        let totalTasks = 0;
+        let completedTasks = 0;
         let currentPhase = null;
         let nextTask = null;
 
-        for (const phases of Roadmap.phases) {
-            for (const task of phases.task) {
-                totalTasks++;
-                if (task.completed) {
-                    completedTasks++;
-                } else {
-                    if (!currentPhase) {
-                        currentPhase = phases.title;
-                    }
-                    if (!nextTask) {
-                        nextTask = task.task;
+        // SAFE GUARD: Only iterate if roadmap is NOT null/undefined
+        if (roadmap && roadmap.phases) {
+            for (const phase of roadmap.phases) {
+                if (phase.tasks) {
+                    for (const task of phase.tasks) {
+                        totalTasks++;
+
+                        if (task.completed) {
+                            completedTasks++;
+                        } else {
+                            if (!currentPhase) {
+                                currentPhase = phase.phase;
+                            }
+                            if (!nextTask) {
+                                nextTask = task.task;
+                            }
+                        }
                     }
                 }
             }
         }
 
+        // Return a beautifully safe JSON payload back to React
         return res.status(200).json({
             name: user.name,
-            targetRole: profile.targetRole,
-            progress: roadmap.progress,
-            status: roadmap.status,
-            completedTasks,
-            totalTasks,
-            currentPhase,
-            nextTask,
+            targetRole: profile ? profile.targetRole : "Set your target role!",
+            progress: roadmap ? roadmap.progress : 0,
+            status: roadmap ? roadmap.status : "Not Started",
+            completedTasks: totalTasks > 0 ? completedTasks : 0,
+            totalTasks: totalTasks > 0 ? totalTasks : 0,
+            currentPhase: currentPhase || "Onboarding",
+            nextTask: nextTask || "Create a roadmap to begin",
+            streak: profile ? profile.streak : 0,
+
         });
 
     } catch (error) {
+        // Log the real, raw error to your backend terminal so you can trace it
+        console.error("Dashboard Controller Error:", error);
+        
         return res.status(500).json({
             message: 'Something went wrong while getting dashboard',
+            error: error.message // Temporarily pass this back to see details if it breaks
         });
     }
+}
 
-
-};

@@ -1,5 +1,6 @@
 import Profile from "../models/profile.model.js";
-import User from "../models/user.model.js";
+import Roadmap from "../models/roadmap.model.js";
+import bcrypt from 'bcryptjs';
 export const createProfile = async (req, res) => {
 
     try {
@@ -81,11 +82,57 @@ export const updateProfile = async (req, res) => {
         );
         return res.status(200).json({
             message:'Profile Updated Successfully',
-            profile:updateProfile,
+            profile:updatedProfile,
         });
     }catch(error){
-        return res.status(500)({
+        return res.status(500).json({
             message:'Something went wrong while updating profile',
         });
     }
 };
+
+
+export const deleteProfile = async (req, res) => {
+
+    try {
+  
+      const userId = req.user.userId;
+  
+      const { password } = req.body;
+  
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({
+          message: 'User not found',
+        });
+      }
+  
+      const isMatch = await bcrypt.compare(
+        password,
+        user.password
+      );
+  
+      if (!isMatch) {
+        return res.status(400).json({
+          message: 'Incorrect password',
+        });
+      }
+  
+      await Profile.findOneAndDelete({ userId });
+  
+      await Roadmap.findOneAndDelete({ userId });
+  
+      await User.findByIdAndDelete(userId);
+  
+      return res.status(200).json({
+        message: 'Account deleted successfully',
+      });
+  
+    } catch (error) {
+  
+      return res.status(500).json({
+        message: 'Something went wrong while deleting account',
+      });
+    }
+  };

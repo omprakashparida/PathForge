@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth.routes.js';
 import profileRoutes from './routes/profile.routes.js';
 import roadmapRoutes from './routes/roadmap.routes.js';
-
+import dashboardRoutes from './routes/dashboard.routes.js';
 dotenv.config();
 
 const app = express();
@@ -32,11 +32,6 @@ mongoose.connect(process.env.MONGO_URI)
 });
 
 
-
-
-
-
-
 app.get('/',(req,res)=>{
     // console.log('Server is running');
     res.send('Server is running');
@@ -44,3 +39,6 @@ app.get('/',(req,res)=>{
 
 app.use('/api/profile', profileRoutes);
 app.use('/api/roadmap', roadmapRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
+console.log('Dashboard route registered');

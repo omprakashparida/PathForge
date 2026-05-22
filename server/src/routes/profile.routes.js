@@ -3,9 +3,10 @@ import { createProfile } from '../controllers/profile.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 import { getProfile } from '../controllers/profile.controller.js';
 import { updateProfile } from '../controllers/profile.controller.js';
-
+import { deleteProfile } from '../controllers/profile.controller.js';
 const router = express.Router();
 router.post('/create',protect,createProfile);
 router.get('/', protect, getProfile);
 router.put('/update', protect, updateProfile);
+router.delete('/delete',protect, deleteProfile);
 export default router;

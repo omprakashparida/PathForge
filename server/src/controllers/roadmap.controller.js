@@ -1,5 +1,6 @@
 import Profile from '../models/profile.model.js';
 import Roadmap from '../models/roadmap.model.js';
+import User from '../models/user.model.js';
 
 export const generateRoadmap = async (req, res) => {
   try {
@@ -37,14 +38,17 @@ export const generateRoadmap = async (req, res) => {
             tasks: [
               {
                 task: 'Learn HTML',
+             
                 resources: ['MDN HTML Docs'],
               },
               {
                 task: 'Learn CSS',
+              
                 resources: ['MDN CSS Docs'],
               },
               {
                 task: 'Learn JavaScript',
+              
                 resources: ['JavaScript.info'],
               },
             ],
@@ -55,10 +59,12 @@ export const generateRoadmap = async (req, res) => {
             tasks: [
               {
                 task: 'Components & Props',
+              
                 resources: ['React Docs'],
               },
               {
                 task: 'Hooks',
+             
                 resources: ['React Hooks Guide'],
               },
             ],
@@ -69,14 +75,17 @@ export const generateRoadmap = async (req, res) => {
             tasks: [
               {
                 task: 'Node.js',
+               
                 resources: ['Node Docs'],
               },
               {
                 task: 'Express.js',
+             
                 resources: ['Express Docs'],
               },
               {
                 task: 'MongoDB',
+               
                 resources: ['MongoDB University'],
               },
             ],
@@ -107,6 +116,7 @@ export const generateRoadmap = async (req, res) => {
 export const getRoadmap = async (req, res) => {
   try {
     const userId = req.user.userId;
+    const user = await User.findById(userId);
     const roadmap = await Roadmap.findOne({ userId });
     if (!roadmap) {
       return res.status(404).json({
@@ -115,6 +125,7 @@ export const getRoadmap = async (req, res) => {
     }
     return res.status(200).json({
       roadmap,
+      name:user.name,
     });
 
   } catch (error) {

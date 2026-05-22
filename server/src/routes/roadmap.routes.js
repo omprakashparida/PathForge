@@ -8,5 +8,4 @@ const router = express.Router();
 router.post('/generate', protect, generateRoadmap);
 router.get('/', protect, getRoadmap);
 router.put('/complete-task', protect, markTaskComplete);
-
 export default router;
