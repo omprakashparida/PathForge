@@ -1,5 +1,6 @@
 import Profile from "../models/profile.model.js";
 import Roadmap from "../models/roadmap.model.js";
+import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 export const createProfile = async (req, res) => {
 
@@ -130,8 +131,9 @@ export const deleteProfile = async (req, res) => {
       });
   
     } catch (error) {
-  
+        console.log(error);
       return res.status(500).json({
+        
         message: 'Something went wrong while deleting account',
       });
     }
