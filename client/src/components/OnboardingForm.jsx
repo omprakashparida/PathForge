@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import toast from "react-hot-toast";
 
 function OnboardingForm({ onComplete }) {
   const [formData, setFormData] = useState({
@@ -12,33 +13,61 @@ function OnboardingForm({ onComplete }) {
     interests: '',
     goalTimeline: '6 Months'
   });
-  
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('accessToken');
-      
-      // Post the full formData object to your backend!
-      await axios.post('http://localhost:5000/api/profile', formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
 
-      // Tell the Dashboard to refresh and hide this form
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    setLoading(true);
+
+    try {
+
+      const token = localStorage.getItem('accessToken');
+
+
+
+      await axios.post(
+        'http://localhost:5000/api/profile',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+
+      toast.success(
+        "Profile created successfully 🚀"
+      );
+
       onComplete();
+
     } catch (error) {
-      console.error("Error saving profile:", error);
+
+      toast.error(
+        error.response?.data?.message ||
+        "Something went wrong"
+      );
+
+      console.error(
+        "Error saving profile:",
+        error
+      );
+
     } finally {
+
       setLoading(false);
     }
-  };
 
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
       <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
@@ -49,7 +78,7 @@ function OnboardingForm({ onComplete }) {
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
           <div className="space-y-4">
             <h3 className="font-bold text-lg border-b pb-2">Education</h3>
             <div>

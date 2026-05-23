@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-// 1. You MUST import the form component at the top!
 import OnboardingForm from '../components/OnboardingForm';
-import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../layouts/DashboardLayout';
+
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
+  const [tip, setTip] = useState('');
+  const [tipLoading, setTipLoading] = useState(true);
   const navigate = useNavigate();
 
   const fetchDashboard = async () => {
@@ -20,22 +21,44 @@ function Dashboard() {
           },
         }
       );
-
       setDashboardData(response.data);
-
     } catch (error) {
-
       if (error.response?.status === 401) {
-
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-
         navigate('/login');
-
       } else {
-
         console.log(error);
       }
+    }
+  };
+
+  const fetchTip = async (role, phase) => {
+    setTipLoading(true);
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'llama3-8b-8192',
+          messages: [
+            {
+              role: 'user',
+              content: `Give me one short, practical, motivating tip (2-3 sentences max) for someone learning to become a ${role}, currently in phase ${phase}. Be specific and actionable. No intro, just the tip.`
+            }
+          ],
+          max_tokens: 100,
+        }),
+      });
+      const data = await response.json();
+      setTip(data.choices[0].message.content);
+    } catch (error) {
+      setTip('Stay consistent! Even 30 minutes of focused practice daily will compound into expertise over time.');
+    } finally {
+      setTipLoading(false);
     }
   };
 
@@ -43,117 +66,155 @@ function Dashboard() {
     fetchDashboard();
   }, []);
 
+  useEffect(() => {
+    if (dashboardData) {
+      fetchTip(dashboardData.targetRole, dashboardData.currentPhase);
+    }
+  }, [dashboardData]);
+
   if (!dashboardData) {
     return <div>Loading...</div>;
   }
 
-  // Remove the `if(true)` and put the real database check back!
   if (dashboardData.needsOnboarding) {
     return <OnboardingForm onComplete={fetchDashboard} />;
   }
+
   return (
-    <DashboardLayout name={dashboardData.name} >
-      {/* <Navbar name={dashboardData.name} /> */}
-  
-      <div className="p-10">
-        <h1 className="text-4xl font-bold mb-6">
-          Welcome {dashboardData.name} 👋
-        </h1>
+    <DashboardLayout name={dashboardData.name}>
 
-        <div className="grid grid-cols-2 gap-6">
+      {/* ========================== */}
+      {/* Dashboard Wrapper */}
+      {/* ========================== */}
 
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white p-10 relative overflow-hidden">
 
-          <div className="grid grid-cols-2 gap-6">
+        {/* ========================== */}
+        {/* Background Glow Effects */}
+        {/* ========================== */}
 
-            <div className="p-6 rounded-2xl shadow bg-white">
-              <h2 className="text-xl font-semibold">
-                🎯 Target Role
-              </h2>
+        <div className="absolute top-10 left-10 w-96 h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-500 opacity-10 blur-3xl rounded-full"></div>
 
-              <p className="mt-2 text-lg">
-                {dashboardData.targetRole}
-              </p>
-            </div>
+        {/* ========================== */}
+        {/* Welcome Section */}
+        {/* ========================== */}
 
-            <div className="p-6 rounded-2xl shadow bg-white">
-              <h2 className="text-xl font-semibold">
-                🔥 Current Streak
-              </h2>
+        <div className="relative z-10 mb-10">
+          <h1 className="text-5xl font-bold">
+            Welcome back,
+            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              {" "}{dashboardData.name}
+            </span>
+            {" "}👋
+          </h1>
+          <p className="text-gray-400 mt-3 text-lg">
+            Keep building your journey 🚀
+          </p>
+        </div>
 
-              <p className="mt-2 text-lg">
-                {dashboardData.streak} Days
-              </p>
-            </div>
+        {/* ========================== */}
+        {/* Dashboard Cards */}
+        {/* ========================== */}
 
-            <div className="p-6 rounded-2xl shadow bg-white">
-              <h2 className="text-xl font-semibold">
-                📚 Current Phase
-              </h2>
+        <div className="relative z-10 grid lg:grid-cols-4 md:grid-cols-2 gap-6">
 
-              <p className="mt-2 text-lg">
-                 
-                {dashboardData.currentPhase}
-              </p>
-            </div>
+          {/* Target */}
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-6 hover:-translate-y-2 transition duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+            <h2 className="text-gray-400 mb-3">🎯 Target Role</h2>
+            <p className="text-xl font-bold">{dashboardData.targetRole}</p>
+          </div>
 
-            <div className="p-6 rounded-2xl shadow bg-white">
-              <h2 className="text-xl font-semibold">
-                📌 Next Task
-              </h2>
+          {/* Streak */}
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-6 hover:-translate-y-2 transition duration-300 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+            <h2 className="text-gray-400 mb-3">🔥 Current Streak</h2>
+            <p className="text-3xl font-bold">
+              {dashboardData.streak}
+              <span className="text-lg text-gray-400"> Days</span>
+            </p>
+          </div>
 
-              <p className="mt-2 text-lg">
-                {dashboardData.nextTask}
-              </p>
-            </div>
+          {/* Phase */}
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-6 hover:-translate-y-2 transition duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+            <h2 className="text-gray-400 mb-3">📚 Current Phase</h2>
+            <p className="text-xl font-bold">{dashboardData.currentPhase}</p>
+          </div>
 
-            <div className="p-6 rounded-2xl shadow bg-white col-span-2">
-
-              <div className="flex justify-between mb-3">
-
-                <h2 className="text-xl font-semibold">
-                  📈 Progress
-                </h2>
-
-                <span className="font-bold text-blue-600">
-                  {dashboardData.progress}%
-                </span>
-
-              </div>
-
-              <div className="w-full bg-gray-200 rounded-full h-5">
-
-                <div
-                  className="bg-blue-600 h-5 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${dashboardData.progress}%`,
-                  }}
-                ></div>
-
-              </div>
-
-              <p className="mt-4 text-lg">
-                ✅ {dashboardData.completedTasks} / {dashboardData.totalTasks} Tasks Completed
-              </p>
-
-            </div>
-
-            <div className="p-6 rounded-2xl shadow bg-white col-span-2">
-
-              <h2 className="text-xl font-semibold mb-2">
-                🚀 Roadmap Status
-              </h2>
-
-              <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold">
-                {dashboardData.status}
-              </span>
-
-            </div>
-
+          {/* Next Task */}
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-6 hover:-translate-y-2 transition duration-300 hover:shadow-[0_0_30px_rgba(34,197,94,0.3)]">
+            <h2 className="text-gray-400 mb-3">📌 Next Task</h2>
+            <p className="text-lg">{dashboardData.nextTask}</p>
           </div>
 
         </div>
+
+        {/* ========================== */}
+        {/* Progress + Status */}
+        {/* ========================== */}
+
+        <div className="relative z-10 grid lg:grid-cols-2 gap-6 mt-8">
+
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-8">
+            <div className="flex justify-between mb-5">
+              <h2 className="text-2xl font-bold">📈 Progress Overview</h2>
+              <span className="text-blue-400 font-bold">{dashboardData.progress}%</span>
+            </div>
+            <div className="w-full h-5 bg-gray-800 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-1000"
+                style={{ width: `${dashboardData.progress}%` }}
+              ></div>
+            </div>
+            <p className="mt-5 text-gray-400">
+              ✅ {dashboardData.completedTasks} / {dashboardData.totalTasks} Tasks completed
+            </p>
+          </div>
+
+          {/* Status Card */}
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-8">
+            <h2 className="text-2xl font-bold mb-5">🚀 Roadmap Status</h2>
+            <span className="px-6 py-3 rounded-full bg-green-500/20 text-green-400 font-bold">
+              {dashboardData.status}
+            </span>
+          </div>
+
+        </div>
+
+        {/* ========================== */}
+        {/* AI Daily Tip */}
+        {/* ========================== */}
+
+        <div className="relative z-10 mt-8">
+          <h2 className="text-2xl font-bold mb-6">💡 AI Daily Tip</h2>
+
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-8 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition duration-300">
+
+            {tipLoading ? (
+              <div className="flex items-center gap-4">
+                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-400">Generating your personalized tip...</p>
+              </div>
+            ) : (
+              <div className="flex gap-5">
+                <span className="text-4xl">🤖</span>
+                <div>
+                  <p className="text-gray-200 text-lg leading-relaxed">{tip}</p>
+                  <button
+                    onClick={() => fetchTip(dashboardData.targetRole, dashboardData.currentPhase)}
+                    className="mt-4 text-blue-400 text-sm hover:text-blue-300 transition"
+                  >
+                    🔄 Get another tip
+                  </button>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+
       </div>
-      </DashboardLayout>
+
+    </DashboardLayout>
   );
 }
 

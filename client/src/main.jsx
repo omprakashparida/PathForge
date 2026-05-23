@@ -1,10 +1,61 @@
+
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+
+
+
 import './index.css'
+
+
+// ==========================
+// App
+// ==========================
+
 import App from './App.jsx'
 
+
+// ==========================
+// Toast Notification
+// ==========================
+
+import { Toaster } from 'react-hot-toast'
+
+
+
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+
+<StrictMode>
+
+<App />
+
+
+{/* ========================== */}
+{/* Global Toast Container */}
+{/* ========================== */}
+
+<Toaster
+position="top-right"
+toastOptions={{
+
+style:{
+background:"#111827",
+color:"#fff",
+border:"1px solid #374151",
+borderRadius:"14px"
+},
+
+success:{
+duration:3000
+},
+
+error:{
+duration:3000
+}
+
+}}
+/>
+
+</StrictMode>
+
 )
