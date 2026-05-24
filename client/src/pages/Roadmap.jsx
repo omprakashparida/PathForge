@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
+import PageLoader from '../components/PageLoader';
 import DashboardLayout from '../layouts/DashboardLayout';
 function Roadmap() {
 
@@ -70,7 +70,7 @@ function Roadmap() {
   }, []);
 
   if (!roadmap) {
-    return <div>Loading...</div>;
+    return <PageLoader />;
   }
 
   return (

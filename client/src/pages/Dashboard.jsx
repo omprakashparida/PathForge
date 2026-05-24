@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import OnboardingForm from '../components/OnboardingForm';
 import { useNavigate } from 'react-router-dom';
+import PageLoader from '../components/PageLoader';
 import DashboardLayout from '../layouts/DashboardLayout';
-
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [tip, setTip] = useState('');
@@ -38,24 +38,40 @@ function Dashboard() {
     try {
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+          'Cache-Control': 'no-cache, no-store',
+          'Pragma': 'no-cache',
         },
         body: JSON.stringify({
-          model: 'llama3-8b-8192',
+          model: 'llama-3.3-70b-versatile',
           messages: [
             {
+              role: 'system',
+              content: 'You are a helpful mentor. Every time you are asked, give a DIFFERENT tip than before. Never repeat yourself.'
+            },
+            {
               role: 'user',
-              content: `Give me one short, practical, motivating tip (2-3 sentences max) for someone learning to become a ${role}, currently in phase ${phase}. Be specific and actionable. No intro, just the tip.`
+              content: `Give me one single complete tip (1-2 sentences max, must end with a period) for someone learning to become a ${role} in phase ${phase}. Be specific and actionable. Never cut off mid sentence. Tip #${Math.floor(Math.random() * 10000)}.`
             }
           ],
-          max_tokens: 100,
+          max_tokens: 50,
+          temperature: 1.0,
         }),
       });
       const data = await response.json();
+      console.log('Groq response:', data);
+      if (!response.ok) {
+        console.log('Groq error:', data.error);
+        setTip('Stay consistent! Even 30 minutes of focused practice daily will compound into expertise over time.');
+        return;
+      }
+
       setTip(data.choices[0].message.content);
     } catch (error) {
+      // console.log('Full error:', error);
       setTip('Stay consistent! Even 30 minutes of focused practice daily will compound into expertise over time.');
     } finally {
       setTipLoading(false);
@@ -73,7 +89,7 @@ function Dashboard() {
   }, [dashboardData]);
 
   if (!dashboardData) {
-    return <div>Loading...</div>;
+    return <PageLoader />;
   }
 
   if (dashboardData.needsOnboarding) {
