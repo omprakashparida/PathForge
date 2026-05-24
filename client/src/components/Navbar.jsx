@@ -38,9 +38,9 @@ function Navbar({ name, toggleSidebar }) {
 
   return (
     <>
-      {/* ========================== */}
+   
       {/* Navbar */}
-      {/* ========================== */}
+    
 
       <div className="flex justify-between items-center px-4 sm:px-8 py-3 sm:py-4 bg-gray-900 border-b border-gray-800">
 
@@ -100,12 +100,12 @@ function Navbar({ name, toggleSidebar }) {
         </div>
       </div>
 
-      {/* ========================== */}
+
       {/* Delete Account Modal */}
-      {/* ========================== */}
+  
 
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-end sm:items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
 
           {/* On mobile slides up from bottom, on desktop centered */}
           <div className="bg-gray-900 border border-gray-700 p-6 sm:p-8 rounded-2xl w-full sm:max-w-md">

@@ -18,9 +18,8 @@ function Sidebar({ isOpen, onClose }) {
       `}
     >
 
-      {/* ========================== */}
       {/* Logo */}
-      {/* ========================== */}
+
 
       <div className="flex items-center justify-between px-4 py-6 overflow-hidden">
 
@@ -55,10 +54,8 @@ function Sidebar({ isOpen, onClose }) {
       {/* Divider */}
       <div className="mx-3 border-t border-gray-800 mb-4"></div>
 
-      {/* ========================== */}
       {/* Nav Links */}
-      {/* ========================== */}
-
+   
       <div className="flex flex-col gap-1 px-2">
         {links.map((link) => {
           const isActive = location.pathname === link.to;
