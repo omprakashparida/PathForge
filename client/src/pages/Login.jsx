@@ -12,7 +12,7 @@ function Login() {
     email: '',
     password: '',
   });
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -23,6 +23,7 @@ function Login() {
   const handleLogin = async (e) => {
 
     e.preventDefault();
+    setIsLoading(true);
 
     try {
 
@@ -72,6 +73,9 @@ function Login() {
       toast.error(
         error.response?.data?.message || "Something went wrong"
         );
+    }finally {
+      
+      setIsLoading(false);
     }
   };
 
@@ -198,13 +202,24 @@ function Login() {
     {/* ========================== */}
     
     <button
-    type="submit"
-    className="w-full py-4 rounded-xl bg-blue-600 hover:scale-105 transition duration-300 text-white font-semibold"
-    >
-    
-    Login
-    
-    </button>
+  type="submit"
+  disabled={isLoading}
+  className={`w-full h-14 rounded-xl flex justify-center items-center font-semibold transition-all duration-300
+    ${isLoading 
+      ? "bg-blue-800 cursor-not-allowed opacity-80" 
+      : "bg-blue-600 hover:scale-105 text-white"
+    }`}
+>
+  {isLoading ? (
+    <div className="flex gap-1.5 items-center justify-center">
+      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+    </div>
+  ) : (
+    "Login"
+  )}
+</button>
     
     
     {/* ========================== */}

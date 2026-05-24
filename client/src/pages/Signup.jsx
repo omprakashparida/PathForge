@@ -15,10 +15,10 @@ function Signup() {
       [e.target.name]: e.target.value,
     });
   };
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleSignup = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       const response = await axios.post(
         '/api/auth/signup',
@@ -30,7 +30,10 @@ function Signup() {
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Something went wrong"
-        );
+      );
+    } finally {
+
+      setIsLoading(false);
     }
   };
 
@@ -158,11 +161,23 @@ function Signup() {
 
 
                 <button
-                  className="w-full py-4 rounded-xl bg-blue-600 hover:scale-105 transition text-white font-semibold"
+                  type="submit"
+                  disabled={isLoading}
+                  className={`w-full h-14 rounded-xl flex justify-center items-center font-semibold transition-all duration-300
+    ${isLoading
+                      ? "bg-blue-800 cursor-not-allowed opacity-80"
+                      : "bg-blue-600 hover:scale-105 text-white"
+                    }`}
                 >
-
-                  Create Account
-
+                  {isLoading ? (
+                    <div className="flex gap-1.5 items-center justify-center">
+                      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                  ) : (
+                    "Create Account"
+                  )}
                 </button>
 
 
