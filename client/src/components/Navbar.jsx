@@ -18,7 +18,7 @@ function Navbar({ name, toggleSidebar }) {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.delete(
-        'http://localhost:5000/api/profile/delete',
+        '/api/profile/delete',
         {
           headers: { Authorization: `Bearer ${token}` },
           data: { password },

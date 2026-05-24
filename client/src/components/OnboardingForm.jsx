@@ -34,7 +34,7 @@ function OnboardingForm({ onComplete }) {
 
 
       await axios.post(
-        'http://localhost:5000/api/profile',
+        '/api/profile',
         formData,
         {
           headers: {

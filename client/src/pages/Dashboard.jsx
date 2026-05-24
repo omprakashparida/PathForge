@@ -15,7 +15,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.get(
-        'http://localhost:5000/api/dashboard',
+        '/api/dashboard',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setDashboardData(response.data);

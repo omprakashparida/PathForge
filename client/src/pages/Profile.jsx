@@ -33,7 +33,7 @@ function Profile() {
         const token = localStorage.getItem('accessToken');
 
         const response = await axios.get(
-          'http://localhost:5000/api/profile',
+          '/api/profile',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ function Profile() {
       if (isEdit) {
 
         response = await axios.put(
-          'http://localhost:5000/api/profile/update',
+          '/api/profile/update',
           formData,
           {
             headers: {
@@ -78,7 +78,7 @@ function Profile() {
       } else {
 
         response = await axios.post(
-          'http://localhost:5000/api/profile/create',
+          '/api/profile/create',
           formData,
           {
             headers: {
@@ -88,7 +88,7 @@ function Profile() {
         );
 
         await axios.post(
-          'http://localhost:5000/api/roadmap/generate',
+          '/api/roadmap/generate',
           {},
           {
             headers: {

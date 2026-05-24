@@ -15,7 +15,7 @@ function Roadmap() {
       const token = localStorage.getItem('accessToken');
 
       const response = await axios.get(
-        'http://localhost:5000/api/roadmap',
+        '/api/roadmap',
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ function Roadmap() {
       const token = localStorage.getItem('accessToken');
 
       await axios.put(
-        'http://localhost:5000/api/roadmap/complete-task',
+        '/api/roadmap/complete-task',
         {
           phase,
           task,
@@ -80,9 +80,9 @@ function Roadmap() {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black px-10 py-8 relative overflow-hidden">
     
     
-    {/* ========================== */}
+
     {/* Background Glow Effects */}
-    {/* ========================== */}
+ 
     
     <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
     

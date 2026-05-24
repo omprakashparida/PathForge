@@ -27,7 +27,7 @@ function Login() {
     try {
 
       const response = await axios.post(
-        'http://localhost:5000/api/auth/login',
+        '/api/auth/login',
         formData
       );
 
@@ -46,7 +46,7 @@ function Login() {
       try {
 
         const profileResponse = await axios.get(
-          'http://localhost:5000/api/profile',
+         '/api/profile',
           {
             headers: {
               Authorization: `Bearer ${token}`,

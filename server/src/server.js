@@ -40,5 +40,11 @@ app.get('/',(req,res)=>{
 app.use('/api/profile', profileRoutes);
 app.use('/api/roadmap', roadmapRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-
+app.use(cors({
+    origin: [
+      "http://localhost:5173", 
+      "https://pathforge-o8sl.onrender.com" 
+    ],
+    credentials: true
+  }));
 console.log('Dashboard route registered');
