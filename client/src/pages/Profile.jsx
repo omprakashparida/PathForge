@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast";
 function Profile() {
-
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,8 +35,8 @@ function Profile() {
           '/api/profile',
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-            },
+              Authorization: `Bearer ${token}`
+            }
           }
         );
 
@@ -44,9 +44,18 @@ function Profile() {
 
         setIsEdit(true);
 
-      } catch (error) {
-        console.log(error);
       }
+      catch (error) {
+
+        console.log(error);
+
+      }
+      finally {
+
+        setLoading(false);
+
+      }
+
     };
 
     fetchProfile();
@@ -109,6 +118,21 @@ function Profile() {
       );
     }
   };
+
+  if (loading) {
+
+    return (
+
+      <div className="min-h-screen bg-black flex items-center justify-center">
+
+        <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+
+      </div>
+
+    );
+
+  }
+
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black px-6 py-10 relative overflow-hidden">

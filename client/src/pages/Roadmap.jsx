@@ -77,16 +77,16 @@ function Roadmap() {
 
     <DashboardLayout name={userName}>
     
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black px-10 py-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black px-4 sm:px-6 lg:px-10 py-8 relative overflow-hidden">
     
     
-
+    {/* ========================== */}
     {/* Background Glow Effects */}
- 
+    {/* ========================== */}
     
-    <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
+    <div className="absolute top-10 left-5 lg:top-20 lg:left-20 w-60 lg:w-96 h-60 lg:h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
     
-    <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 opacity-10 blur-3xl rounded-full"></div>
+    <div className="absolute bottom-10 right-5 lg:bottom-20 lg:right-20 w-60 lg:w-96 h-60 lg:h-96 bg-purple-500 opacity-10 blur-3xl rounded-full"></div>
     
     
     <div className="relative z-10">
@@ -96,9 +96,9 @@ function Roadmap() {
     {/* Header Section */}
     {/* ========================== */}
     
-    <div className="mb-10">
+    <div className="mb-8 lg:mb-10 text-center lg:text-left">
     
-    <h1 className="text-5xl font-bold text-white">
+    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
     
     🗺
     
@@ -110,7 +110,7 @@ function Roadmap() {
     
     </h1>
     
-    <p className="text-gray-400 mt-3 text-lg">
+    <p className="text-gray-400 mt-3 text-base lg:text-lg">
     
     Track your journey and complete milestones 🚀
     
@@ -120,14 +120,14 @@ function Roadmap() {
     
     
     {/* ========================== */}
-    {/* Overall Progress Card */}
+    {/* Progress Card */}
     {/* ========================== */}
     
-    <div className="mb-10 bg-gray-900/80 border border-gray-800 rounded-3xl p-8 backdrop-blur-xl">
+    <div className="mb-10 bg-gray-900/80 border border-gray-800 rounded-3xl p-5 lg:p-8 backdrop-blur-xl">
     
-    <div className="flex justify-between mb-5">
+    <div className="flex justify-between items-center mb-5">
     
-    <h2 className="text-white text-2xl font-bold">
+    <h2 className="text-white text-lg sm:text-xl lg:text-2xl font-bold">
     
     Overall Progress
     
@@ -141,7 +141,8 @@ function Roadmap() {
     
     </div>
     
-    <div className="w-full h-5 rounded-full bg-gray-700 overflow-hidden">
+    
+    <div className="w-full h-4 rounded-full bg-gray-700 overflow-hidden">
     
     <div
     className="h-full rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-1000"
@@ -159,23 +160,26 @@ function Roadmap() {
     {/* Phases */}
     {/* ========================== */}
     
-    <div className="space-y-10">
+    <div className="space-y-8">
     
     {roadmap.phases.map((phase,index)=>(
     
     <div
     key={index}
-    className="relative bg-gray-900/80 border border-gray-800 rounded-3xl p-8 backdrop-blur-xl shadow-[0_0_30px_rgba(59,130,246,0.1)] hover:shadow-[0_0_50px_rgba(59,130,246,0.2)] transition duration-500"
+    className="relative bg-gray-900/80 border border-gray-800 rounded-3xl p-5 lg:p-8 backdrop-blur-xl shadow-[0_0_30px_rgba(59,130,246,0.1)] hover:shadow-[0_0_50px_rgba(59,130,246,0.2)] transition duration-500"
     >
+    
     
     {/* Timeline Dot */}
     
-    <div className="absolute -left-4 top-10 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+    <div className="hidden lg:block absolute -left-4 top-10 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
     
     
+    {/* ========================== */}
     {/* Phase Title */}
+    {/* ========================== */}
     
-    <h2 className="text-3xl font-bold text-white mb-8">
+    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-6">
     
     Phase {phase.phase}
     
@@ -188,7 +192,9 @@ function Roadmap() {
     </h2>
     
     
+    {/* ========================== */}
     {/* Tasks */}
+    {/* ========================== */}
     
     <div className="space-y-4">
     
@@ -196,32 +202,57 @@ function Roadmap() {
     
     <div
     key={taskIndex}
-    className={`flex items-center justify-between p-5 rounded-2xl border transition duration-300 hover:scale-[1.01]
+    className={`
+    
+    flex flex-col lg:flex-row
+    gap-4
+    justify-between
+    lg:items-center
+    p-5
+    rounded-2xl
+    border
+    transition-all
+    duration-300
+    hover:scale-[1.01]
     
     ${task.completed
     
     ? "bg-green-500/10 border-green-500"
     
     : "bg-gray-800 border-gray-700 hover:border-blue-500"
-    }`}
+    
+    }
+    
+    `}
     >
     
-    <div className="flex items-center gap-4">
     
-    <div className="text-2xl">
+    {/* Left Content */}
     
-    {task.completed ? "✅" : "📌"}
+    <div className="flex gap-4 flex-1 items-start">
+    
+    <div className="text-2xl shrink-0">
+    
+    {task.completed ? "✅":"📌"}
     
     </div>
     
-    <p className={`text-lg
+    
+    <p
+    className={`
+    
+    text-base sm:text-lg
     
     ${task.completed
     
     ? "text-green-400 line-through"
     
     : "text-white"
-    }`}>
+    
+    }
+    
+    `}
+    >
     
     {task.task}
     
@@ -229,6 +260,8 @@ function Roadmap() {
     
     </div>
     
+    
+    {/* Button */}
     
     <button
     
@@ -239,21 +272,33 @@ function Roadmap() {
     
     disabled={task.completed}
     
-    className={`px-6 py-3 rounded-xl font-semibold transition
+    className={`
+    
+    w-full lg:w-auto
+    py-3
+    px-6
+    min-w-[170px]
+    rounded-2xl
+    font-semibold
+    transition-all
+    duration-300
     
     ${task.completed
     
-    ? "bg-gray-600 text-white"
+    ? "bg-gray-700 text-white"
     
     : "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:scale-105"
-    }`}
+    
+    }
+    
+    `}
     >
     
     {task.completed
     
     ? "Completed ✅"
     
-    : "Mark Complete"}
+    : "Complete Task"}
     
     </button>
     
