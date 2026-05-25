@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast";
+import PageLoader from '../components/PageLoader';
 function Profile() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -121,38 +122,31 @@ function Profile() {
 
   if (loading) {
 
-    return (
-
-      <div className="min-h-screen bg-black flex items-center justify-center">
-
-        <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-
-      </div>
-
-    );
+    return <PageLoader />;
 
   }
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black px-6 py-10 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black px-4 sm:px-6 lg:px-10 py-8 lg:py-10 relative overflow-hidden">
+
 
       {/* ========================== */}
       {/* Background Glow Effects */}
       {/* ========================== */}
 
-      <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
+      <div className="absolute top-10 left-5 lg:top-20 lg:left-20 w-60 lg:w-96 h-60 lg:h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
 
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 opacity-10 blur-3xl rounded-full"></div>
+      <div className="absolute bottom-10 right-5 lg:bottom-20 lg:right-20 w-60 lg:w-96 h-60 lg:h-96 bg-purple-500 opacity-10 blur-3xl rounded-full"></div>
 
 
       {/* ========================== */}
-      {/* Form Container */}
+      {/* Main Container */}
       {/* ========================== */}
 
-      <div className="relative z-10 max-w-4xl mx-auto">
+      <div className="relative z-10 max-w-5xl mx-auto">
 
-        <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-10 shadow-[0_0_50px_rgba(59,130,246,0.15)]">
+        <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-[0_0_50px_rgba(59,130,246,0.15)]">
 
 
           {/* ========================== */}
@@ -161,7 +155,7 @@ function Profile() {
 
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-8 transition"
+            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 transition-all duration-300 hover:translate-x-1"
           >
 
             ← Back to Dashboard
@@ -173,9 +167,9 @@ function Profile() {
           {/* Header */}
           {/* ========================== */}
 
-          <div className="mb-10">
+          <div className="mb-8 lg:mb-10 text-center lg:text-left">
 
-            <h1 className="text-5xl font-bold text-white">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
 
               {isEdit ? "Edit Your" : "Complete Your"}
 
@@ -189,7 +183,8 @@ function Profile() {
 
             </h1>
 
-            <p className="text-gray-400 mt-4">
+
+            <p className="text-gray-400 mt-4 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto lg:mx-0">
 
               Customize your learning journey and help AI generate better roadmaps.
 
@@ -199,13 +194,14 @@ function Profile() {
 
 
           {/* ========================== */}
-          {/* Profile Form */}
+          {/* Form */}
           {/* ========================== */}
 
           <form
             onSubmit={handleSubmit}
-            className="grid md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6"
           >
+
 
             {/* College */}
 
@@ -215,7 +211,7 @@ function Profile() {
               placeholder="🏫 College"
               value={formData.college}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
@@ -227,7 +223,7 @@ function Profile() {
               placeholder="📚 Branch"
               value={formData.branch}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
@@ -239,37 +235,47 @@ function Profile() {
               placeholder="🎓 Current Year"
               value={formData.year}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
-            {/* Target Role */}
+            {/* Role */}
 
             <select
               name="targetRole"
               value={formData.targetRole}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             >
 
-              <option value="">Select Target Role</option>
+              <option value="">
+
+                Select Target Role
+
+              </option>
 
               <option value="Frontend Developer">
+
                 Frontend Developer
+
               </option>
 
               <option value="Backend Developer">
+
                 Backend Developer
+
               </option>
 
               <option value="Full Stack Developer">
+
                 Full Stack Developer
+
               </option>
 
             </select>
 
 
-            {/* Skill Level */}
+            {/* Skill */}
 
             <input
               type="text"
@@ -277,7 +283,7 @@ function Profile() {
               placeholder="⚡ Skill Level"
               value={formData.currentSkillLevel}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
@@ -289,7 +295,7 @@ function Profile() {
               placeholder="⏰ Daily Available Hours"
               value={formData.dailyAvailableHours}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
@@ -301,7 +307,7 @@ function Profile() {
               placeholder="❤️ Interests"
               value={formData.interests}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
@@ -313,7 +319,7 @@ function Profile() {
               placeholder="🎯 Goal Timeline"
               value={formData.goalTimeline}
               onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 outline-none"
+              className="bg-gray-800 border border-gray-700 p-4 rounded-2xl text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition"
             />
 
 
@@ -321,7 +327,7 @@ function Profile() {
             {/* Submit Button */}
             {/* ========================== */}
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 pt-2">
 
               <button
                 type="submit"
