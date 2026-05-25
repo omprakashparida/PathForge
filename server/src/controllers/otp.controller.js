@@ -85,15 +85,15 @@ message:"OTP sent successfully"
 
 catch(error){
 
-console.log(error);
-
-res.status(500).json({
-
-message:"Failed to send OTP"
-
-});
-
-}
+    console.log("OTP ERROR:", error);
+    
+    res.status(500).json({
+    
+    message:error.message
+    
+    });
+    
+    }
 
 };
 
