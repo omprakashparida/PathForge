@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import toast from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 function Signup() {
   const [formData, setFormData] = useState({
     name: '',
@@ -10,32 +11,74 @@ function Signup() {
   });
 
   const handleChange = (e) => {
+
     setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+    
+    ...formData,
+    
+    [e.target.name]:e.target.value
+    
     });
-  };
-  const [isLoading, setIsLoading] = useState(false);
-  const handleSignup = async (e) => {
+    
+    };
+    const navigate = useNavigate();
+    
+    const [isLoading,setIsLoading]=useState(false);
+    
+    
+    const handleSignup=async(e)=>{
     e.preventDefault();
+    
     setIsLoading(true);
-    try {
-      const response = await axios.post(
-        '/api/auth/signup',
-        formData
-      );
-
-      toast.success(response.data.message);
-
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Something went wrong"
-      );
-    } finally {
-
-      setIsLoading(false);
+    
+    try{
+    
+    const response=await axios.post(
+    
+    "/api/auth/send-signup-otp",
+    
+    formData
+    
+    );
+    
+    toast.success(
+    response.data.message
+    );
+    
+    
+    navigate(
+    
+    "/verify-otp",
+    
+    {
+    
+    state:{
+    email:formData.email
     }
-  };
+    
+    }
+    
+    );
+    
+    }
+    catch(error){
+    
+    toast.error(
+    
+    error.response?.data?.message ||
+    
+    "Something went wrong"
+    
+    );
+    
+    }
+    finally{
+    
+    setIsLoading(false);
+    
+    }
+    
+    };
 
   return (
 

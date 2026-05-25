@@ -1,7 +1,6 @@
 import dns from 'dns';
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
-
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -10,6 +9,7 @@ import authRoutes from './routes/auth.routes.js';
 import profileRoutes from './routes/profile.routes.js';
 import roadmapRoutes from './routes/roadmap.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import otpRoutes from "./routes/otp.routes.js";
 dotenv.config();
 
 const app = express();
@@ -47,4 +47,7 @@ app.use(cors({
     ],
     credentials: true
   }));
+  app.use("/api/auth",otpRoutes);
+
+    
 console.log('Dashboard route registered');
