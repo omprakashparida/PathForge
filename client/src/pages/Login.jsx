@@ -83,22 +83,24 @@ function Login() {
 
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
     
+    
     {/* ========================== */}
     {/* Background Glow Effects */}
     {/* ========================== */}
     
-    <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500 opacity-20 blur-3xl rounded-full"></div>
+    <div className="absolute top-10 left-5 md:top-20 md:left-20 w-60 md:w-96 h-60 md:h-96 bg-blue-500 opacity-20 blur-3xl rounded-full"></div>
     
-    <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 opacity-20 blur-3xl rounded-full"></div>
+    <div className="absolute bottom-10 right-5 md:bottom-20 md:right-20 w-60 md:w-96 h-60 md:h-96 bg-purple-500 opacity-20 blur-3xl rounded-full"></div>
     
     
-    <div className="grid md:grid-cols-2 min-h-screen">
+    <div className="grid lg:grid-cols-2 min-h-screen">
+    
     
     {/* ========================== */}
     {/* Left Side Content */}
     {/* ========================== */}
     
-    <div className="flex flex-col justify-center px-16 text-white">
+    <div className="flex flex-col justify-center px-6 sm:px-10 lg:px-16 py-16 text-white text-center lg:text-left">
     
     <p className="text-blue-400 font-semibold mb-5">
     
@@ -106,7 +108,8 @@ function Login() {
     
     </p>
     
-    <h1 className="text-6xl font-bold leading-tight mb-8">
+    
+    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-8">
     
     Continue Your
     
@@ -118,7 +121,8 @@ function Login() {
     
     </h1>
     
-    <p className="text-gray-400 text-lg mb-10">
+    
+    <p className="text-gray-400 text-base sm:text-lg mb-10 max-w-xl mx-auto lg:mx-0">
     
     Track progress, maintain streaks,
     and continue building your career.
@@ -130,7 +134,7 @@ function Login() {
     {/* Features Cards */}
     {/* ========================== */}
     
-    <div className="space-y-5">
+    <div className="space-y-5 max-w-lg mx-auto lg:mx-0">
     
     <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-4">
     
@@ -159,20 +163,16 @@ function Login() {
     {/* Login Form */}
     {/* ========================== */}
     
-    <div className="flex justify-center items-center px-10">
+    <div className="flex justify-center items-center px-4 sm:px-6 lg:px-10 py-10">
     
-    <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl w-full max-w-md p-10">
+    <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl w-full max-w-md p-6 sm:p-10">
     
-    <h2 className="text-white text-3xl font-bold mb-8">
+    <h2 className="text-white text-3xl font-bold mb-8 text-center">
     
     Login
     
     </h2>
     
-    
-    {/* ========================== */}
-    {/* Form Starts */}
-    {/* ========================== */}
     
     <form
     onSubmit={handleLogin}
@@ -186,6 +186,7 @@ function Login() {
     onChange={handleChange}
     className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:border-blue-500"
     />
+    
     
     <input
     type="password"
@@ -202,24 +203,35 @@ function Login() {
     {/* ========================== */}
     
     <button
-  type="submit"
-  disabled={isLoading}
-  className={`w-full h-14 rounded-xl flex justify-center items-center font-semibold transition-all duration-300
-    ${isLoading 
-      ? "bg-blue-800 cursor-not-allowed opacity-80" 
-      : "bg-blue-600 hover:scale-105 text-white"
+    type="submit"
+    disabled={isLoading}
+    className={`w-full h-14 rounded-xl flex justify-center items-center font-semibold transition-all duration-300
+    
+    ${isLoading
+    ? "bg-blue-800 cursor-not-allowed opacity-80"
+    : "bg-blue-600 hover:scale-105 text-white"
     }`}
->
-  {isLoading ? (
-    <div className="flex gap-1.5 items-center justify-center">
-      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-      <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+    >
+    
+    {isLoading ? (
+    
+    <div className="flex gap-1.5 items-center">
+    
+    <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce"></div>
+    
+    <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce [animation-delay:150ms]"></div>
+    
+    <div className="w-2.5 h-2.5 bg-white rounded-full animate-bounce [animation-delay:300ms]"></div>
+    
     </div>
-  ) : (
+    
+    ):(
+    
     "Login"
-  )}
-</button>
+    
+    )}
+    
+    </button>
     
     
     {/* ========================== */}
@@ -242,10 +254,6 @@ function Login() {
     </p>
     
     </form>
-    
-    {/* ========================== */}
-    {/* Form Ends */}
-    {/* ========================== */}
     
     </div>
     
