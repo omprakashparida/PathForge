@@ -49,6 +49,10 @@ const roadmapSchema = new mongoose.Schema(
                 ],
             },
         ],
+        generatedAt:{
+            type:Date,
+            default:Date.now
+            }
     },
     {
         timestamps: true,
