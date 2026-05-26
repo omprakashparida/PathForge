@@ -32,15 +32,34 @@ function Dashboard() {
 
   const fetchTip = async (role, phase) => {
     setTipLoading(true);
+
+    // 1. Create a unique cache key based on the role and phase
+    const CACHE_KEY = `cachedTip_${role}_${phase}`;
+    const CACHE_TIME_LIMIT = 30 * 60 * 1000; // 30 minutes in milliseconds
+
     try {
+      // 2. Check if we have a saved tip in localStorage
+      const cachedDataString = localStorage.getItem(CACHE_KEY);
+
+      if (cachedDataString) {
+        const cachedData = JSON.parse(cachedDataString);
+        const currentTime = new Date().getTime();
+
+        // 3. If the saved tip is less than 30 minutes old, use it and STOP
+        if (currentTime - cachedData.timestamp < CACHE_TIME_LIMIT) {
+          setTip(cachedData.tip);
+          setTipLoading(false);
+          return;
+        }
+      }
+
+      // 4. If no valid cache exists, call the Groq API
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
-          'Cache-Control': 'no-cache, no-store',
-          'Pragma': 'no-cache',
         },
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
@@ -58,12 +77,23 @@ function Dashboard() {
           temperature: 1.0,
         }),
       });
+
       const data = await response.json();
+
       if (!response.ok) {
         setTip('Stay consistent! Even 30 minutes of focused practice daily will compound into expertise over time.');
         return;
       }
-      setTip(data.choices[0].message.content);
+
+      const fetchedTip = data.choices[0].message.content;
+
+      // 5. Save the new tip AND the current exact time to localStorage
+      setTip(fetchedTip);
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        tip: fetchedTip,
+        timestamp: new Date().getTime()
+      }));
+
     } catch (error) {
       setTip('Stay consistent! Even 30 minutes of focused practice daily will compound into expertise over time.');
     } finally {
@@ -91,9 +121,9 @@ function Dashboard() {
         <div className="absolute top-10 left-10 w-48 sm:w-96 h-48 sm:h-96 bg-blue-500 opacity-10 blur-3xl rounded-full"></div>
         <div className="absolute bottom-10 right-10 w-48 sm:w-96 h-48 sm:h-96 bg-purple-500 opacity-10 blur-3xl rounded-full"></div>
 
-  
+
         {/* Welcome Section */}
-     
+
 
         <div className="relative z-10 mb-6 sm:mb-10">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
@@ -108,9 +138,9 @@ function Dashboard() {
           </p>
         </div>
 
-     
+
         {/* Dashboard Cards */}
-     
+
 
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
 
@@ -143,9 +173,9 @@ function Dashboard() {
 
         </div>
 
-     
+
         {/* Progress + Status */}
-   
+
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
 
@@ -175,9 +205,9 @@ function Dashboard() {
 
         </div>
 
-     
+
         {/* AI Daily Tip */}
-  
+
 
         <div className="relative z-10 mt-4 sm:mt-8">
           <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">💡 AI Daily Tip</h2>

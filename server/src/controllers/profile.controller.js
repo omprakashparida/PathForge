@@ -137,149 +137,67 @@ message:
 
 
 // UPDATE PROFILE
-
-
-export const updateProfile=async(req,res)=>{
-
-try{
-
-const userId=req.user.userId;
-
-const profile=
-
-await Profile.findOne({
-
-userId
-
-});
-
-if(!profile){
-
-return res.status(404).json({
-
-message:"Profile not found"
-
-});
-
-}
-
-
-
-// ROADMAP LOCK LOGIC
-
-
-const roadmap=
-
-await Roadmap.findOne({
-
-userId
-
-});
-
-
-if(roadmap){
-
-const diffDays=
-
-Math.floor(
-
-(new Date()
-
--
-
-roadmap.generatedAt)
-
-/
-
-(1000*60*60*24)
-
-);
-
-
-if(diffDays<14){
-
-const restrictedFields=[
-
-"targetRole",
-
-"currentSkillLevel",
-
-"dailyAvailableHours",
-
-"interests",
-
-"goalTimeline"
-
-];
-
-
-const attemptedChange=
-
-restrictedFields.some(
-
-(field)=>
-
-req.body[field]!==undefined
-
-);
-
-
-if(attemptedChange){
-
-return res.status(400).json({
-
-message:
-`Roadmap settings can be changed after ${14-diffDays} days`
-
-});
-
-}
-
-}
-
-}
-
-
-// UPDATE PROFILE
-const updatedProfile=
-
-await Profile.findOneAndUpdate(
-
-{userId},
-
-req.body,
-
-{
-
-new:true
-
-}
-
-);
-
-
-return res.status(200).json({
-
-message:
-"Profile Updated Successfully",
-
-profile:updatedProfile
-
-});
-
-}
-catch(error){
-
-return res.status(500).json({
-
-message:
-"Something went wrong while updating profile"
-
-});
-
-}
-
-};
+export const updateProfile = async (req, res) => {
+    try {
+      const userId = req.user.userId;
+  
+      const profile = await Profile.findOne({ userId });
+  
+      if (!profile) {
+        return res.status(404).json({
+          message: "Profile not found"
+        });
+      }
+  
+      // ==========================================
+      // 🔒 ROADMAP LOCK LOGIC
+      // ==========================================
+      const roadmap = await Roadmap.findOne({ userId });
+  
+      if (roadmap) {
+        const diffDays = Math.floor(
+          (new Date() - roadmap.generatedAt) / (1000 * 60 * 60 * 24)
+        );
+  
+        if (diffDays < 14) {
+          const restrictedFields = [
+            "targetRole",
+            "currentSkillLevel",
+            "dailyAvailableHours",
+            "interests",
+            "goalTimeline"
+          ];
+  
+          
+          restrictedFields.forEach((field) => {
+            if (req.body[field] !== undefined) {
+              delete req.body[field];
+            }
+          });
+        }
+      }
+  
+      // ==========================================
+      // ✅ UPDATE PROFILE
+      // ==========================================
+      const updatedProfile = await Profile.findOneAndUpdate(
+        { userId },
+        req.body, // This is now safely filtered!
+        { new: true }
+      );
+  
+      return res.status(200).json({
+        message: "Profile Updated Successfully",
+        profile: updatedProfile
+      });
+  
+    } catch (error) {
+      console.log("Profile Update Error:", error);
+      return res.status(500).json({
+        message: "Something went wrong while updating profile"
+      });
+    }
+  };
 
 // DELETE ACCOUNT
 
