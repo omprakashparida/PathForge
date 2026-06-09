@@ -126,7 +126,7 @@ function Login() {
                   className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 text-white outline-none focus:border-blue-500"
                 />
                 
-                {/* 🛑 Moved Forgot Password Here */}
+                {/*   Forgot Password  */}
                 <div className="flex justify-end">
                   <Link
                     to="/forgot-password"

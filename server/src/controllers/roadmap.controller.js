@@ -25,7 +25,7 @@ export const generateRoadmap = async (req, res) => {
 
         (new Date() -
 
-        existingRoadmap.generatedAt)
+          existingRoadmap.generatedAt)
 
         /
 
@@ -38,7 +38,7 @@ export const generateRoadmap = async (req, res) => {
         return res.status(400).json({
 
           message:
-          `You can generate a new roadmap after ${14 - diffDays} days`
+            `You can generate a new roadmap after ${14 - diffDays} days`
 
         });
 
@@ -57,7 +57,7 @@ export const generateRoadmap = async (req, res) => {
       return res.status(404).json({
 
         message:
-        "Please create profile first"
+          "Please create profile first"
 
       });
 
@@ -158,7 +158,7 @@ Format:
     const aiResponse =
 
       completion.choices[0]
-      .message.content;
+        .message.content;
 
     const roadmapData =
       JSON.parse(aiResponse);
@@ -174,7 +174,7 @@ Format:
 
         ...roadmapData,
 
-        generatedAt:new Date()
+        generatedAt: new Date()
 
       });
 
@@ -183,7 +183,7 @@ Format:
     return res.status(201).json({
 
       message:
-      "Roadmap generated successfully 🚀",
+        "Roadmap generated successfully 🚀",
 
       roadmap
 
@@ -201,7 +201,7 @@ Format:
     return res.status(500).json({
 
       message:
-      "Something went wrong while generating roadmap"
+        "Something went wrong while generating roadmap"
 
     });
 
@@ -233,7 +233,7 @@ export const getRoadmap = async (req, res) => {
       return res.status(404).json({
 
         message:
-        'Roadmap not found',
+          'Roadmap not found',
 
       });
 
@@ -243,7 +243,7 @@ export const getRoadmap = async (req, res) => {
 
       roadmap,
 
-      name:user.name,
+      name: user.name,
 
     });
 
@@ -254,7 +254,7 @@ export const getRoadmap = async (req, res) => {
     return res.status(500).json({
 
       message:
-      'Something went wrong while fetching roadmap',
+        'Something went wrong while fetching roadmap',
 
     });
 
@@ -267,205 +267,205 @@ export const getRoadmap = async (req, res) => {
 // MARK TASK COMPLETE
 
 
-export const markTaskComplete = async (req,res)=>{
+export const markTaskComplete = async (req, res) => {
 
-try{
+  try {
 
-const userId=req.user.userId;
+    const userId = req.user.userId;
 
-const {phase,task}=req.body;
+    const { phase, task } = req.body;
 
-const roadmap=
-await Roadmap.findOne({userId});
+    const roadmap =
+      await Roadmap.findOne({ userId });
 
-if(!roadmap){
+    if (!roadmap) {
 
-return res.status(404).json({
+      return res.status(404).json({
 
-message:"Roadmap not found"
+        message: "Roadmap not found"
 
-});
+      });
 
-}
+    }
 
-const selectedPhase=
-roadmap.phases.find(
+    const selectedPhase =
+      roadmap.phases.find(
 
-(p)=>p.phase===phase
+        (p) => p.phase === phase
 
-);
+      );
 
-if(!selectedPhase){
+    if (!selectedPhase) {
 
-return res.status(404).json({
+      return res.status(404).json({
 
-message:"Phase not found"
+        message: "Phase not found"
 
-});
+      });
 
-}
+    }
 
-const selectedTask=
-selectedPhase.tasks.find(
+    const selectedTask =
+      selectedPhase.tasks.find(
 
-(t)=>t.task===task
+        (t) => t.task === task
 
-);
+      );
 
-if(!selectedTask){
+    if (!selectedTask) {
 
-return res.status(404).json({
+      return res.status(404).json({
 
-message:"Task not found"
+        message: "Task not found"
 
-});
+      });
 
-}
+    }
 
-if(selectedTask.completed){
+    if (selectedTask.completed) {
 
-return res.status(400).json({
+      return res.status(400).json({
 
-message:"Task already completed"
+        message: "Task already completed"
 
-});
+      });
 
-}
+    }
 
 
-selectedTask.completed=true;
+    selectedTask.completed = true;
 
 
-const profile=
-await Profile.findOne({userId});
+    const profile =
+      await Profile.findOne({ userId });
 
-const today=new Date();
+    const today = new Date();
 
-const lastDate=
-profile.lastCompletedDate
-?new Date(profile.lastCompletedDate)
-:null;
+    const lastDate =
+      profile.lastCompletedDate
+        ? new Date(profile.lastCompletedDate)
+        : null;
 
 
-if(!lastDate){
+    if (!lastDate) {
 
-profile.streak=1;
+      profile.streak = 1;
 
-}
-else{
+    }
+    else {
 
-const todayOnly=
-new Date(
+      const todayOnly =
+        new Date(
 
-today.getFullYear(),
+          today.getFullYear(),
 
-today.getMonth(),
+          today.getMonth(),
 
-today.getDate()
+          today.getDate()
 
-);
+        );
 
-const lastOnly=
-new Date(
+      const lastOnly =
+        new Date(
 
-lastDate.getFullYear(),
+          lastDate.getFullYear(),
 
-lastDate.getMonth(),
+          lastDate.getMonth(),
 
-lastDate.getDate()
+          lastDate.getDate()
 
-);
+        );
 
-const diffDays=
+      const diffDays =
 
-Math.floor(
+        Math.floor(
 
-(todayOnly-lastOnly)
+          (todayOnly - lastOnly)
 
-/
+          /
 
-(1000*60*60*24)
+          (1000 * 60 * 60 * 24)
 
-);
+        );
 
-if(diffDays===1){
+      if (diffDays === 1) {
 
-profile.streak+=1;
+        profile.streak += 1;
 
-}
-else if(diffDays>1){
+      }
+      else if (diffDays > 1) {
 
-profile.streak=1;
+        profile.streak = 1;
 
-}
+      }
 
-}
+    }
 
-profile.lastCompletedDate=today;
+    profile.lastCompletedDate = today;
 
-await profile.save();
+    await profile.save();
 
 
-let totalTasks=0;
-let completedTasks=0;
+    let totalTasks = 0;
+    let completedTasks = 0;
 
-roadmap.phases.forEach((phase)=>{
+    roadmap.phases.forEach((phase) => {
 
-phase.tasks.forEach((task)=>{
+      phase.tasks.forEach((task) => {
 
-totalTasks++;
+        totalTasks++;
 
-if(task.completed){
+        if (task.completed) {
 
-completedTasks++;
+          completedTasks++;
 
-}
+        }
 
-});
+      });
 
-});
+    });
 
 
-roadmap.progress=
+    roadmap.progress =
 
-Math.round(
+      Math.round(
 
-(completedTasks/totalTasks)*100
+        (completedTasks / totalTasks) * 100
 
-);
+      );
 
-if(roadmap.progress===100){
+    if (roadmap.progress === 100) {
 
-roadmap.status='Completed';
+      roadmap.status = 'Completed';
 
-}
-else if(roadmap.progress>0){
+    }
+    else if (roadmap.progress > 0) {
 
-roadmap.status='In Progress';
+      roadmap.status = 'In Progress';
 
-}
+    }
 
-await roadmap.save();
+    await roadmap.save();
 
-return res.status(200).json({
+    return res.status(200).json({
 
-message:"Task marked completed",
+      message: "Task marked completed",
 
-progress:roadmap.progress,
+      progress: roadmap.progress,
 
-roadmap
+      roadmap
 
-});
+    });
 
-}
-catch(error){
+  }
+  catch (error) {
 
-return res.status(500).json({
+    return res.status(500).json({
 
-message:"Something went wrong"
+      message: "Something went wrong"
 
-});
+    });
 
-}
+  }
 
 };

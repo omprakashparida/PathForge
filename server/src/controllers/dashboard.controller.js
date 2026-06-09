@@ -59,12 +59,12 @@ export const getDashboardSummary = async (req, res) => {
         });
 
     } catch (error) {
-        // Log the real, raw error to your backend terminal so you can trace it
+        
         console.error("Dashboard Controller Error:", error);
         
         return res.status(500).json({
             message: 'Something went wrong while getting dashboard',
-            error: error.message // Temporarily pass this back to see details if it breaks
+            error: error.message 
         });
     }
 }
