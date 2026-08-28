@@ -62,7 +62,7 @@ function Dashboard() {
           'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: 'qwen/qwen3.8-27b',
           messages: [
             {
               role: 'system',
@@ -86,7 +86,6 @@ function Dashboard() {
       }
 
       const fetchedTip = data.choices[0].message.content;
-
       // 5. Save the new tip AND the current exact time to localStorage
       setTip(fetchedTip);
       localStorage.setItem(CACHE_KEY, JSON.stringify({

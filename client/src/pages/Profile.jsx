@@ -209,6 +209,17 @@ function Profile() {
                   <option value="Frontend Developer">Frontend Developer</option>
                   <option value="Backend Developer">Backend Developer</option>
                   <option value="Full Stack Developer">Full Stack Developer</option>
+                  <option value="Software Engineer">Software Engineer</option>
+
+                  <option value="AI Engineer">AI Engineer</option>
+                  <option value="Data Scientist">Data Scientist</option>
+
+                  <option value="DevOps Engineer">DevOps Engineer</option>
+                  <option value="Cloud Engineer">Cloud Engineer</option>
+
+                  <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+
+                  <option value="Mobile App Developer">Mobile App Developer</option>
                 </select>
               </div>
 
