@@ -1,286 +1,141 @@
 import { Link } from 'react-router-dom';
-import BorderGlow from '../components/BorderGlow';
+
+const FEATURES = [
+  { icon: '🎯', title: 'Personalized Roadmaps', text: 'AI-generated learning paths shaped around your goals, skills and schedule.' },
+  { icon: '🤖', title: 'AI Coach', text: 'Bite-sized coaching and daily tips that keep you moving forward.' },
+  { icon: '🔥', title: 'Daily Streaks', text: 'Stay consistent and build learning habits that compound.' },
+  { icon: '📚', title: 'Curated Resources', text: 'Hand-picked courses, docs and videos matched to your journey.' },
+];
 
 function Landing() {
-
-return (
-
-<>
-
-{/* ========================== */}
-{/* Hero Section */}
-{/* ========================== */}
-
-<section className="relative overflow-hidden min-h-screen flex items-center px-4 sm:px-6 md:px-10 py-24">
-
-{/* Background */}
-
-<div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
-
-
-{/* Glow effects */}
-
-<div className="absolute top-10 left-5 md:top-20 md:left-20 w-52 md:w-72 h-52 md:h-72 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
-
-<div className="absolute bottom-10 right-5 md:bottom-20 md:right-20 w-64 md:w-96 h-64 md:h-96 bg-purple-400 opacity-20 rounded-full blur-3xl"></div>
-
-
-{/* ========================== */}
-{/* Navbar */}
-{/* ========================== */}
-
-<div className="absolute top-0 left-0 w-full px-4 sm:px-6 md:px-10 py-5 z-20 flex justify-between items-center">
-
-<h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-
-PathForge
-
-</h1>
-
-
-<div className="flex items-center gap-2 sm:gap-5">
-
-<Link
-to="/login"
-className="font-semibold text-sm sm:text-base text-white hover:text-blue-400 px-2 sm:px-3 py-2 transition"
->
-
-Login
-
-</Link>
-
-
-<Link
-to="/signup"
-className="bg-blue-600 text-white text-sm sm:text-base px-4 sm:px-5 py-2 rounded-xl hover:scale-105 transition"
->
-
-Sign Up
-
-</Link>
-
-</div>
-
-</div>
-
-
-{/* ========================== */}
-{/* Main Grid */}
-{/* ========================== */}
-
-<div className="relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
-
-{/* ========================== */}
-{/* Left Content */}
-{/* ========================== */}
-
-<div className="text-center lg:text-left">
-
-<p className="text-blue-500 font-semibold mb-4">
-
-🚀 Personalized Learning Platform
-
-</p>
-
-
-<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">
-
-Forge Your <br/>
-
-<span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-
-Learning Journey
-
-</span>
-
-</h1>
-
-
-<p className="mt-6 text-gray-300 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
-
-AI-powered learning roadmaps tailored
-to your goals.
-
-Track progress, maintain streaks,
-and achieve your dream career.
-
-</p>
-
-
-<div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center lg:justify-start">
-
-<Link
-to="/signup"
-className="px-8 py-4 rounded-xl bg-blue-600 text-white font-semibold hover:scale-105 transition"
->
-
-Start Learning
-
-</Link>
-
-
-<a
-href="#features"
-className="px-8 py-4 rounded-xl border border-gray-600 text-white hover:bg-white hover:text-black transition"
->
-
-Explore Features
-
-</a>
-
-</div>
-
-</div>
-
-
-{/* ========================== */}
-{/* Dashboard Preview */}
-{/* ========================== */}
-
-<div className="relative max-w-lg mx-auto w-full">
-
-<BorderGlow
-borderRadius={28}
-glowRadius={35}
-glowIntensity={1.2}
-animated={true}
-colors={[
-'#3b82f6',
-'#8b5cf6',
-'#ec4899'
-]}
->
-
-<div className="bg-gray-900/90 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-gray-800 text-white">
-
-<h2 className="text-xl md:text-2xl font-bold mb-6">
-
-Dashboard Preview
-
-</h2>
-
-
-<div className="space-y-4">
-
-<div className="bg-gray-800/80 p-4 rounded-xl border border-gray-700">
-
-🎯 Full Stack Developer
-
-</div>
-
-<div className="bg-gray-800/80 p-4 rounded-xl border border-gray-700">
-
-🔥 5 Day Streak
-
-</div>
-
-<div className="bg-gray-800/80 p-4 rounded-xl border border-gray-700">
-
-📈 Progress 45%
-
-<div className="w-full bg-gray-700 rounded-full h-3 mt-3">
-
-<div
-className="bg-blue-600 h-3 rounded-full"
-style={{width:"45%"}}
-/>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</BorderGlow>
-
-</div>
-
-</div>
-
-</section>
-
-
-{/* ========================== */}
-{/* Features Section */}
-{/* ========================== */}
-
-<section
-id="features"
-className="py-20 px-4 sm:px-6 md:px-10 bg-white"
->
-
-<div className="text-center mb-16">
-
-<p className="text-blue-600 font-semibold mb-3">
-
-FEATURES
-
-</p>
-
-<h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-
-Everything You Need To
-Build Your Career
-
-</h2>
-
-<p className="text-gray-500 mt-5">
-
-Personalized learning,
-progress tracking,
-and roadmap guidance.
-
-</p>
-
-</div>
-
-
-<div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
-{[
-["🎯","Personalized Roadmaps","Get customized learning paths based on your goals."],
-["🔥","Daily Streaks","Stay consistent and build learning habits."],
-["📈","Progress Tracking","Monitor learning progress visually."],
-["🗺","Interactive Journey","Complete tasks and follow your roadmap."]
-].map((item,index)=>(
-
-<div
-key={index}
-className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-3xl shadow hover:scale-105 transition duration-300"
->
-
-<div className="text-4xl mb-4">
-
-{item[0]}
-
-</div>
-
-<h3 className="font-bold text-xl mb-3">
-
-{item[1]}
-
-</h3>
-
-<p className="text-gray-600">
-
-{item[2]}
-
-</p>
-
-</div>
-
-))}
-
-</div>
-
-</section>
-
-</>
-
-);
-
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden' }}>
+      <div className="glow-a" />
+      <div className="glow-b" />
+
+      {/* Nav */}
+      <nav className="landing-nav">
+        <Link to="/" className="brand-row" style={{ textDecoration: 'none' }}>
+          <span className="mark">P</span>
+          <span className="word">Path<em>Forge</em></span>
+        </Link>
+        <div className="row">
+          <Link to="/login" className="btn btn-ghost">Login</Link>
+          <Link to="/signup" className="btn btn-primary btn-sm" style={{ padding: '10px 22px' }}>Sign Up</Link>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="split" style={{ minHeight: '100vh' }}>
+        <div className="split-left">
+          <p className="eyebrow">Personalized learning platform</p>
+          <h1 className="title" style={{ fontSize: 'clamp(38px,5.5vw,64px)' }}>
+            Forge your <em>learning journey</em>
+          </h1>
+          <p className="subtitle" style={{ fontSize: 17 }}>
+            AI-powered roadmaps tailored to your goals. Track progress,
+            maintain streaks, and forge your way to your dream career.
+          </p>
+          <div className="row" style={{ flexWrap: 'wrap' }}>
+            <Link to="/signup" className="btn btn-primary" style={{ padding: '14px 32px', fontSize: 15 }}>
+              Start Learning
+            </Link>
+            <a href="#features" className="btn btn-secondary" style={{ padding: '14px 32px', fontSize: 15 }}>
+              Explore Features
+            </a>
+          </div>
+
+          <div className="hero-list">
+            {[
+              { icon: '🎯', text: 'Personalized Roadmaps' },
+              { icon: '🤖', text: 'AI Coach Guidance' },
+              { icon: '🔥', text: 'Daily Streak Tracking' },
+            ].map((f) => (
+              <div key={f.text} className="hero-item">
+                <span className="iconbox" style={{ width: 34, height: 34, fontSize: 16 }}>{f.icon}</span>
+                {f.text}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dashboard preview */}
+        <div className="split-right">
+          <div className="card" style={{ width: '100%', maxWidth: 420 }}>
+            <div className="between" style={{ marginBottom: 18 }}>
+              <h3 className="serif" style={{ margin: 0, fontSize: 21 }}>Dashboard Preview</h3>
+              <span className="badge ember">Live</span>
+            </div>
+            <div className="grid" style={{ gap: 12 }}>
+              <div className="row">
+                <span className="iconbox">🎯</span>
+                <div>
+                  <div className="small">Target role</div>
+                  <div style={{ fontWeight: 600 }}>Full Stack Developer</div>
+                </div>
+              </div>
+              <div className="row">
+                <span className="iconbox">🔥</span>
+                <div>
+                  <div className="small">Current streak</div>
+                  <div style={{ fontWeight: 600 }}>5 days</div>
+                </div>
+              </div>
+              <div>
+                <div className="between" style={{ marginBottom: 8 }}>
+                  <span className="small">Progress</span>
+                  <span style={{ fontWeight: 700, color: 'var(--ember2)' }}>45%</span>
+                </div>
+                <div className="progress-track">
+                  <div className="progress-fill" style={{ width: '45%' }} />
+                </div>
+              </div>
+              <div className="notice info" style={{ margin: 0 }}>
+                <span>🤖</span>
+                <span>“Ship one small project this week — applied practice beats another tutorial.”</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" style={{ padding: '80px clamp(18px,4vw,44px)', maxWidth: 1180, margin: '0 auto' }}>
+        <p className="eyebrow" style={{ textAlign: 'center' }}>Features</p>
+        <h2 className="title" style={{ textAlign: 'center', fontSize: 'clamp(28px,4vw,44px)' }}>
+          Everything you need to <em>build your career</em>
+        </h2>
+        <p className="subtitle" style={{ textAlign: 'center', margin: '0 auto 8px' }}>
+          Personalized learning, progress tracking, and roadmap guidance — in one forge.
+        </p>
+        <div className="feat-grid">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="card lift">
+              <span className="iconbox" style={{ marginBottom: 14 }}>{f.icon}</span>
+              <h3 style={{ margin: '0 0 8px', fontSize: 18 }}>{f.title}</h3>
+              <p className="small" style={{ margin: 0, lineHeight: 1.6 }}>{f.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="card" style={{ marginTop: 40, textAlign: 'center', padding: '44px 28px' }}>
+          <h2 className="serif" style={{ margin: '0 0 10px', fontSize: 30 }}>
+            Ready to forge your path?
+          </h2>
+          <p className="subtitle" style={{ textAlign: 'center', margin: '0 auto 24px' }}>
+            Create your free account and get your AI roadmap in minutes.
+          </p>
+          <Link to="/signup" className="btn btn-primary" style={{ padding: '14px 40px', fontSize: 15 }}>
+            Get Started Free
+          </Link>
+        </div>
+
+        <p className="dim" style={{ textAlign: 'center', fontSize: 12.5, marginTop: 36 }}>
+          © {new Date().getFullYear()} PathForge. Forge your learning journey.
+        </p>
+      </section>
+    </div>
+  );
 }
 
 export default Landing;

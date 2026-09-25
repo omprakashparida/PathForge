@@ -1,30 +1,16 @@
 function PageLoader() {
-    return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
-  
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/40 animate-pulse">
-            <span className="text-white font-black text-xl">PF</span>
-          </div>
-          <span className="text-3xl font-black bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            PathForge
-          </span>
-        </div>
-  
-        {/* Spinner */}
-        <div className="relative w-12 h-12">
-          <div className="absolute inset-0 rounded-full border-4 border-gray-800"></div>
-          <div className="absolute inset-0 rounded-full border-4 border-t-blue-500 border-r-purple-500 border-b-transparent border-l-transparent animate-spin"></div>
-        </div>
-  
-        {/* Text */}
-        <p className="text-gray-500 text-sm tracking-widest uppercase animate-pulse">
-          Loading your journey...
-        </p>
-  
+  return (
+    <div className="loader-wrap">
+      <div className="brand-row">
+        <span className="mark" style={{ width: 46, height: 46, fontSize: 24 }}>P</span>
+        <span className="word" style={{ fontSize: 28 }}>Path<em>Forge</em></span>
       </div>
-    );
-  }
-  
-  export default PageLoader;
+      <div className="spin" style={{ width: 34, height: 34, borderWidth: 4, borderTopColor: 'var(--ember)' }} />
+      <p className="dim" style={{ fontSize: 13, letterSpacing: '.18em', textTransform: 'uppercase', margin: 0 }}>
+        Heating the forge...
+      </p>
+    </div>
+  );
+}
+
+export default PageLoader;

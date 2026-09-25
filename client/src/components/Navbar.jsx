@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api, { logout } from '../api';
 import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast";
 
@@ -11,22 +11,18 @@ function Navbar({ name, toggleSidebar }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    logout();
     navigate('/login');
   };
 
   const handleDeleteAccount = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.delete('/api/profile/delete', {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await api.delete('/api/profile/delete', {
         data: { password },
       });
       toast.success(response.data.message);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      logout();
       navigate('/signup');
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");

@@ -1,54 +1,43 @@
-import { useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Navbar from '../components/Navbar';
+import { Link, useLocation } from 'react-router-dom';
+import Sidebar, { NAV_LINKS } from '../components/Sidebar';
+import UserMenu from '../components/UserMenu';
 
+// App shell: fixed rail on desktop, slim top bar + bottom nav on mobile.
 function DashboardLayout({ children, name }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
 
   return (
-    <div className="flex min-h-screen bg-black relative">
+    <div className="shell">
+      <Sidebar name={name} />
 
+      <div className="main">
+        <div className="mobile-topbar">
+          <Link to="/dashboard" className="brand-row" style={{ textDecoration: 'none' }}>
+            <span className="mark" style={{ width: 30, height: 30, fontSize: 16 }}>P</span>
+            <span className="word" style={{ fontSize: 18 }}>Path<em>Forge</em></span>
+          </Link>
+          <div style={{ position: 'relative' }}>
+            <UserMenu name={name} dropUp={false} compact />
+          </div>
+        </div>
 
-      {/* Mobile Overlay */}
-
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-20 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
-
-      {/* Sidebar */}
-    
-
-      {/* Mobile: slides in as drawer */}
-      <div className={`
-        fixed top-0 left-0 h-full z-30 lg:hidden
-        transform transition-transform duration-300
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
-        <Sidebar isOpen={true} onClose={() => setIsSidebarOpen(false)} />
-      </div>
-
-      {/* Desktop: always visible, collapses to icon strip */}
-      <div className="hidden lg:block">
-        <Sidebar isOpen={isSidebarOpen} />
-      </div>
-
-      {/* ========================== */}
-      {/* Main Content */}
-      {/* ========================== */}
-      <div className="flex-1 bg-black min-w-0">
-        <Navbar
-          name={name}
-          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        />
-        <main className="p-0">
-          {children}
+        <main style={{ flex: 1 }}>
+          <div className="page">{children}</div>
         </main>
-      </div>
 
+        <nav className="mnav">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={location.pathname === link.to ? 'on' : ''}
+            >
+              <span className="ic">{link.icon}</span>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </div>
   );
 }
