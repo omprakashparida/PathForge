@@ -13,6 +13,7 @@ import roadmapRoutes from './routes/roadmap.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import otpRoutes from './routes/otp.routes.js';
 import tipRoutes from './routes/tip.routes.js';
+import { securityHeaders } from './middleware/security.middleware.js';
 
 dotenv.config();
 
@@ -21,13 +22,23 @@ const PORT = process.env.PORT || 5000;
 
 // Single CORS policy, registered once before the routes. (The old code
 // registered a permissive cors() first, which silently overrode this one.)
+// Allowed frontend origins, comma-separated via CORS_ORIGINS.
+// Set it on the host (e.g. Render) to include every deployed frontend URL:
+//   CORS_ORIGINS=https://my-app.vercel.app,http://localhost:5173
+// so a frontend move never needs a code change.
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:5173")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://pathforge-o8sl.onrender.com'],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
 app.use(express.json());
+app.use(securityHeaders);
 
 app.get('/', (req, res) => {
   res.send('Server is running');
@@ -38,7 +49,7 @@ app.use('/api/auth', otpRoutes); // OTP endpoints share the /api/auth prefix
 app.use('/api/profile', profileRoutes);
 app.use('/api/roadmap', roadmapRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/tips', tipRoutes);
+app.use('/api/tips', tipRoutes); // AI tip proxied so the Groq key stays server-side
 console.log('Dashboard route registered');
 
 // 404 for unknown routes (JSON, not Express's default HTML)
