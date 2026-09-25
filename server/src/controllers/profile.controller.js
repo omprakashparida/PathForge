@@ -66,20 +66,20 @@ export const createProfile = async (req, res) => {
     return res.status(201).json({
 
       message:
-      "Profile created successfully",
+        "Profile created successfully",
 
-      profile:newProfile,
+      profile: newProfile,
 
     });
 
   }
 
-  catch(error){
+  catch (error) {
 
     return res.status(500).json({
 
       message:
-      "Something went wrong while creating profile"
+        "Something went wrong while creating profile"
 
     });
 
@@ -90,208 +90,188 @@ export const createProfile = async (req, res) => {
 
 // GET PROFILE
 
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
 
-export const getProfile = async(req,res)=>{
+    const profile = await Profile.findOne({ userId });
 
-try{
+    if (!profile) {
+      return res.status(404).json({
+        message: "Profile not found"
+      });
+    }
 
-const userId=req.user.userId;
+    const roadmap = await Roadmap.findOne({ userId });
 
-const profile=
+    return res.status(200).json({
+      profile,
+      roadmap
+    });
 
-await Profile.findOne({
-
-userId
-
-});
-
-if(!profile){
-
-return res.status(404).json({
-
-message:"Profile not found"
-
-});
-
-}
-
-return res.status(200).json({
-
-profile
-
-});
-
-}
-catch(error){
-
-return res.status(500).json({
-
-message:
-"Something went wrong while fetching profile"
-
-});
-
-}
-
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong while fetching profile"
+    });
+  }
 };
-
 
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {
-    try {
-      const userId = req.user.userId;
-  
-      const profile = await Profile.findOne({ userId });
-  
-      if (!profile) {
-        return res.status(404).json({
-          message: "Profile not found"
-        });
-      }
-  
-      // ==========================================
-      // 🔒 ROADMAP LOCK LOGIC
-      // ==========================================
-      const roadmap = await Roadmap.findOne({ userId });
-  
-      if (roadmap) {
-        const diffDays = Math.floor(
-          (new Date() - roadmap.generatedAt) / (1000 * 60 * 60 * 24)
-        );
-  
-        if (diffDays < 14) {
-          const restrictedFields = [
-            "targetRole",
-            "currentSkillLevel",
-            "dailyAvailableHours",
-            "interests",
-            "goalTimeline"
-          ];
-  
-          
-          restrictedFields.forEach((field) => {
-            if (req.body[field] !== undefined) {
-              delete req.body[field];
-            }
-          });
-        }
-      }
-  
-      // ==========================================
-      // ✅ UPDATE PROFILE
-      // ==========================================
-      const updatedProfile = await Profile.findOneAndUpdate(
-        { userId },
-        req.body, // This is now safely filtered!
-        { new: true }
-      );
-  
-      return res.status(200).json({
-        message: "Profile Updated Successfully",
-        profile: updatedProfile
-      });
-  
-    } catch (error) {
-      console.log("Profile Update Error:", error);
-      return res.status(500).json({
-        message: "Something went wrong while updating profile"
+  try {
+    const userId = req.user.userId;
+
+    const profile = await Profile.findOne({ userId });
+
+    if (!profile) {
+      return res.status(404).json({
+        message: "Profile not found"
       });
     }
-  };
+
+    // ==========================================
+    //  ROADMAP LOCK LOGIC
+    // ==========================================
+    const roadmap = await Roadmap.findOne({ userId });
+
+    if (roadmap) {
+      const diffDays = Math.floor(
+        (new Date() - roadmap.generatedAt) / (1000 * 60 * 60 * 24)
+      );
+
+      if (diffDays < 14) {
+        const restrictedFields = [
+          "targetRole",
+          "currentSkillLevel",
+          "dailyAvailableHours",
+          "interests",
+          "goalTimeline"
+        ];
+
+
+        restrictedFields.forEach((field) => {
+          if (req.body[field] !== undefined) {
+            delete req.body[field];
+          }
+        });
+      }
+    }
+
+    // ==========================================
+    // UPDATE PROFILE
+    // ==========================================
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { userId },
+      req.body, // This is now safely filtered!
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "Profile Updated Successfully",
+      profile: updatedProfile
+    });
+
+  } catch (error) {
+    console.log("Profile Update Error:", error);
+    return res.status(500).json({
+      message: "Something went wrong while updating profile"
+    });
+  }
+};
 
 // DELETE ACCOUNT
 
 
-export const deleteProfile = async(req,res)=>{
+export const deleteProfile = async (req, res) => {
 
-try{
+  try {
 
-const userId=req.user.userId;
+    const userId = req.user.userId;
 
-const {password}=req.body;
-
-
-const user=
-
-await User.findById(
-
-userId
-
-);
+    const { password } = req.body;
 
 
-if(!user){
+    const user =
 
-return res.status(404).json({
+      await User.findById(
 
-message:"User not found"
+        userId
 
-});
-
-}
+      );
 
 
-const isMatch=
+    if (!user) {
 
-await bcrypt.compare(
+      return res.status(404).json({
 
-password,
+        message: "User not found"
 
-user.password
+      });
 
-);
-
-
-if(!isMatch){
-
-return res.status(400).json({
-
-message:
-"Incorrect password"
-
-});
-
-}
+    }
 
 
-// Delete all related data
+    const isMatch =
 
-await Profile.findOneAndDelete({
+      await bcrypt.compare(
 
-userId
+        password,
 
-});
+        user.password
 
-await Roadmap.findOneAndDelete({
-
-userId
-
-});
-
-await User.findByIdAndDelete(
-
-userId
-
-);
+      );
 
 
-return res.status(200).json({
+    if (!isMatch) {
 
-message:
-"Account deleted successfully"
+      return res.status(400).json({
 
-});
+        message:
+          "Incorrect password"
 
-}
-catch(error){
+      });
 
-return res.status(500).json({
+    }
 
-message:
-"Something went wrong while deleting account"
 
-});
+    // Delete all related data
 
-}
+    await Profile.findOneAndDelete({
+
+      userId
+
+    });
+
+    await Roadmap.findOneAndDelete({
+
+      userId
+
+    });
+
+    await User.findByIdAndDelete(
+
+      userId
+
+    );
+
+
+    return res.status(200).json({
+
+      message:
+        "Account deleted successfully"
+
+    });
+
+  }
+  catch (error) {
+
+    return res.status(500).json({
+
+      message:
+        "Something went wrong while deleting account"
+
+    });
+
+  }
 
 };
