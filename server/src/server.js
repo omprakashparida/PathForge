@@ -13,6 +13,7 @@ import roadmapRoutes from './routes/roadmap.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import otpRoutes from './routes/otp.routes.js';
 import tipRoutes from './routes/tip.routes.js';
+import coachRoutes from './routes/coach.routes.js';
 import { securityHeaders } from './middleware/security.middleware.js';
 
 dotenv.config();
@@ -50,6 +51,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/roadmap', roadmapRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/tips', tipRoutes); // AI tip proxied so the Groq key stays server-side
+app.use('/api/coach', coachRoutes); // AI coach chat, roadmap-grounded
 console.log('Dashboard route registered');
 
 // 404 for unknown routes (JSON, not Express's default HTML)
