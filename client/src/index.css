@@ -272,3 +272,6 @@ select.input option{background:#241D15}
   color:var(--dim);text-decoration:none;font-size:10.5px;font-weight:600}
 .mnav a .ic{font-size:19px}
 .mnav a.on{color:var(--ember2)}
+/* Landing nav buttons: never wrap, never shrink */
+.landing-nav .row{flex-wrap:nowrap}
+nav.landing-nav .btn{white-space:nowrap;flex:none}
