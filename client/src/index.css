@@ -220,6 +220,7 @@ select.input option{background:#241D15}
   background:rgba(255,255,255,.02);font-size:14.5px;font-weight:500}
 .landing-nav{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
   padding:20px clamp(18px,4vw,44px)}
+.landing-nav .btn{white-space:nowrap;flex:none} /* "Sign Up" must never wrap to two lines */
 .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:26px}
 
 /* ---------- Misc ---------- */
