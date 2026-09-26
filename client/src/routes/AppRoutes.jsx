@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import Landing from '../pages/Landing';
 import Login from '../pages/Login';
@@ -12,6 +12,14 @@ import VerifyOTP from '../pages/VerifyOTP';
 import ForgotPassword from "../pages/ForgotPassword";
 import ForgotVerifyOTP from "../pages/ForgotVerifyOTP";
 import ResetPassword from "../pages/ResetPassword";
+
+// Unknown URL: never show a blank screen. Logged-in users land on their
+// dashboard; everyone else lands on the marketing page. (A dead token still
+// ends up at /login — the API interceptor bounces expired sessions there.)
+function CatchAll() {
+  const loggedIn = !!localStorage.getItem('accessToken');
+  return <Navigate to={loggedIn ? '/dashboard' : '/'} replace />;
+}
 
 function AppRoutes() {
   return (
@@ -40,6 +48,9 @@ function AppRoutes() {
           path="/reset-password"
           element={<ResetPassword />}
         />
+
+        {/* Must stay last: catches every unknown URL */}
+        <Route path="*" element={<CatchAll />} />
       </Routes>
     </BrowserRouter>
   );

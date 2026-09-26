@@ -5,60 +5,52 @@ import PageLoader from '../components/PageLoader';
 import DashboardLayout from '../layouts/DashboardLayout';
 
 const SUGGESTIONS = [
-  { icon: '⚡', label: 'Give me a focus tip', text: 'What should I focus on today?' },
-  { icon: '🧱', label: "I'm feeling stuck", text: "I'm feeling stuck on my learning, what should I do?" },
-  { icon: '🔥', label: 'Motivate me', text: 'Motivate me to keep going' },
-  { icon: '🎤', label: 'Interview prep advice', text: 'Give me interview preparation advice' },
+  { icon: '🎯', label: 'Focus today', text: 'What should I focus on today?' },
+  { icon: '🧱', label: "I'm stuck", text: "I'm feeling stuck on my current phase. What should I do?" },
+  { icon: '📖', label: 'Explain my phase', text: 'Explain my current phase in simple terms.' },
+  { icon: '🔥', label: 'Motivate me', text: 'Motivate me to keep going.' },
 ];
-
-// Short contextual openers so the coach feels conversational. The actual
-// coaching content always comes from the AI tip endpoint — nothing here
-// pretends to answer open questions the backend can't handle.
-function ackFor(text) {
-  const t = text.toLowerCase();
-  if (/stuck|confus|don't understand|hard|difficult|lost/.test(t))
-    return "Getting stuck means you're at the edge of your skill — that's exactly where growth happens. Here's something concrete to try:";
-  if (/motivat|tired|lazy|give up|discourag|bored/.test(t))
-    return 'Dips happen to everyone. Discipline beats motivation — shrink the task until it\u2019s easy to start. In that spirit:';
-  if (/interview|job|placement|resume/.test(t))
-    return 'Smart — preparing early compounds fast. Here\u2019s an interview-seasoned tip:';
-  if (/focus|today|now|start|plan/.test(t))
-    return 'Good — clarity first. Here\u2019s where to put your energy:';
-  if (/thank/.test(t))
-    return 'Anytime. Keep the streak alive — and here\u2019s one more for the road:';
-  if (/^(hi|hello|hey|yo)\b/.test(t))
-    return 'Hey! Ready when you are. Here\u2019s your coaching:';
-  return 'Noted. Here\u2019s what your coach suggests:';
-}
 
 function Coach() {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
-  const [phase, setPhase] = useState('');
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
   const bottomRef = useRef(null);
 
   useEffect(() => {
     const init = async () => {
       try {
-        const res = await api.get('/api/dashboard');
-        const d = res.data;
+        const [dashRes, histRes] = await Promise.all([
+          api.get('/api/dashboard'),
+          api.get('/api/coach/history'),
+        ]);
+        const d = dashRes.data;
         setName(d.name || '');
         setRole(d.targetRole || '');
-        setPhase(d.currentPhase || '');
         setNeedsOnboarding(!!d.needsOnboarding);
-        setMessages([
-          {
-            from: 'coach',
-            text: d.targetRole
-              ? `Hey ${d.name || 'there'}! I'm your AI coach. Ask me for a tip, or tap a suggestion below — I'll forge bite-sized coaching around your ${d.targetRole} journey.`
-              : `Hey ${d.name || 'there'}! I'm your AI coach. Complete your profile first so I can coach you properly.`,
-          },
-        ]);
+
+        const history = (histRes.data.messages || []).map((m) => ({
+          from: m.role === 'assistant' ? 'coach' : 'user',
+          text: m.content,
+        }));
+
+        setMessages(
+          history.length
+            ? history
+            : [
+                {
+                  from: 'coach',
+                  text: d.targetRole
+                    ? `Hey ${d.name || 'there'}! I'm Forge, your AI coach. I can see your ${d.targetRole} roadmap — ask me what to focus on, get a phase explained, or just talk through where you're stuck.`
+                    : `Hey ${d.name || 'there'}! I'm Forge, your AI coach. Complete your profile first so I can coach you properly.`,
+                },
+              ]
+        );
       } catch (error) {
         if (error.response?.status !== 401) console.log(error);
       } finally {
@@ -79,21 +71,44 @@ function Coach() {
     setMessages((m) => [...m, { from: 'user', text: clean }]);
     setInput('');
     setThinking(true);
-
-    // Small beat so the reply doesn't feel instant/robotic.
-    await new Promise((r) => setTimeout(r, 700));
+    setConfirmClear(false);
 
     try {
-      const res = await api.post('/api/tips', { role, phase });
-      const tip = res.data.tip || 'Stay consistent! Even 30 minutes of focused practice daily will compound into expertise over time.';
-      setMessages((m) => [...m, { from: 'coach', text: `${ackFor(clean)}\n\n"${tip}"` }]);
+      const res = await api.post('/api/coach', { message: clean });
+      setMessages((m) => [...m, { from: 'coach', text: res.data.reply }]);
     } catch (error) {
-      setMessages((m) => [
-        ...m,
-        { from: 'coach', text: 'The forge is cooling down for a moment — try again shortly. Meanwhile: stay consistent, even 30 minutes of focused practice compounds.' },
-      ]);
+      const status = error.response?.status;
+      const fallback =
+        status === 429
+          ? 'The coach is catching its breath (AI rate limit) — try again in a moment.'
+          : status === 400
+            ? 'Keep messages under 1000 characters and try again.'
+            : 'The forge is cooling down for a moment — try again shortly.';
+      if (status !== 401) {
+        setMessages((m) => [...m, { from: 'coach', text: fallback }]);
+      }
     } finally {
       setThinking(false);
+    }
+  };
+
+  const clearChat = async () => {
+    if (!confirmClear) {
+      setConfirmClear(true);
+      setTimeout(() => setConfirmClear(false), 3000);
+      return;
+    }
+    setConfirmClear(false);
+    try {
+      await api.delete('/api/coach/history');
+      setMessages([
+        {
+          from: 'coach',
+          text: `Fresh page. ${role ? `I still remember your ${role} roadmap — ` : ''}what's on your mind?`,
+        },
+      ]);
+    } catch (error) {
+      if (error.response?.status !== 401) console.log(error);
     }
   };
 
@@ -106,7 +121,7 @@ function Coach() {
         Your <em>corner coach</em>
       </h1>
       <p className="subtitle">
-        Bite-sized AI coaching forged around your {role || 'learning'} journey. Ask for a tip anytime.
+        A real conversation with Forge — it reads your roadmap and progress before every reply, so the coaching is about <em>your</em> journey, not generic advice.
       </p>
 
       {needsOnboarding ? (
@@ -120,16 +135,30 @@ function Coach() {
         </div>
       ) : (
         <div className="card">
+          <div className="between" style={{ marginBottom: 14 }}>
+            <span className="badge ember">🧠 Remembers your roadmap</span>
+            {messages.length > 1 && (
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={clearChat}
+                disabled={thinking}
+                style={{ color: confirmClear ? 'var(--bad)' : undefined }}
+              >
+                {confirmClear ? 'Tap again to confirm' : 'Clear chat'}
+              </button>
+            )}
+          </div>
+
           <div className="chat">
             {messages.map((m, i) => (
               <div key={i} className={`msg ${m.from}`}>
-                <span className="who">{m.from === 'coach' ? '🤖 AI Coach' : 'You'}</span>
+                <span className="who">{m.from === 'coach' ? '🤖 Forge' : 'You'}</span>
                 <span style={{ whiteSpace: 'pre-line' }}>{m.text}</span>
               </div>
             ))}
             {thinking && (
               <div className="msg coach">
-                <span className="who">🤖 AI Coach</span>
+                <span className="who">🤖 Forge</span>
                 <span className="typing"><span /><span /><span /></span>
               </div>
             )}
@@ -138,7 +167,7 @@ function Coach() {
 
           <div className="chips">
             {SUGGESTIONS.map((s) => (
-              <button key={s.label} className="chip" onClick={() => askCoach(s.text)}>
+              <button key={s.label} className="chip" onClick={() => askCoach(s.text)} disabled={thinking}>
                 {s.icon} {s.label}
               </button>
             ))}
@@ -152,8 +181,8 @@ function Coach() {
               className="input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask for coaching..."
-              maxLength={200}
+              placeholder="Ask Forge anything about your journey..."
+              maxLength={1000}
             />
             <button type="submit" className="btn btn-primary" disabled={thinking || !input.trim()}>
               Send
