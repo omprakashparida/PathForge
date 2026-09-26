@@ -14,6 +14,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 html,body,#root{background:var(--bg);margin:0;padding:0}
+body{overflow-x:clip} /* safety: decorative absolute blobs must never cause sideways scroll */
 body{
   font-family:Inter,system-ui,sans-serif;color:var(--ink);
   background:
@@ -200,7 +201,7 @@ select.input option{background:#241D15}
 .searchbar .s-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:16px}
 
 /* ---------- Auth / public ---------- */
-.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 18px;position:relative}
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 18px;position:relative;overflow:hidden}
 .auth-card{width:100%;max-width:440px;background:linear-gradient(180deg,var(--panel),#1E1812);border:1px solid var(--line);
   border-radius:22px;padding:36px 32px;box-shadow:var(--sh);position:relative;z-index:1;animation:rise .45s ease both}
 .auth-card h1{font-size:30px;margin:14px 0 6px}
@@ -213,7 +214,7 @@ select.input option{background:#241D15}
 .brand-row{display:flex;align-items:center;gap:10px;justify-content:center}
 .split{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
 .split-left{display:flex;flex-direction:column;justify-content:center;padding:60px clamp(24px,6vw,90px);position:relative;overflow:hidden}
-.split-right{display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.split-right{display:flex;align-items:center;justify-content:center;padding:40px 24px;position:relative;overflow:hidden}
 .hero-list{display:flex;flex-direction:column;gap:12px;margin-top:34px;max-width:440px}
 .hero-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid var(--line);border-radius:14px;
   background:rgba(255,255,255,.02);font-size:14.5px;font-weight:500}
@@ -247,8 +248,18 @@ select.input option{background:#241D15}
     position:sticky;top:0;z-index:40}
   .page{padding:20px 16px 120px}
   .grid-4,.grid-2,.grid-3{grid-template-columns:1fr}
+  .card{padding:16px} /* 22px felt cavernous on phones */
+  .between{flex-wrap:wrap;row-gap:10px} /* title+button headers stack instead of squeezing */
   .split{grid-template-columns:1fr}
   .split-left{padding:90px 24px 30px}
+  .split:has(.auth-card) .split-left{display:none} /* auth on phones: form first, no marketing scroll */
+  .split:has(.auth-card) .split-right{padding:28px 14px}
+  .auth-card{padding:28px 22px}
+  .auth-wrap{padding:24px 14px}
+  .empty{padding:36px 20px}
+  .modal-back{align-items:flex-start;overflow-y:auto}
+  .modal{margin:auto;max-height:calc(100dvh - 36px);overflow-y:auto;padding:24px 20px}
+  .chatbar .btn{flex:none} /* send button never gets squished by the input */
   .msg{max-width:94%}
   body{padding-bottom:0}
   .task-meta{display:none} /* whole task row is the tap target on mobile; the hint just eats space */
