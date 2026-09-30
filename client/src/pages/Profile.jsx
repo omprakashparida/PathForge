@@ -44,8 +44,10 @@ function Profile() {
 
     const fetchProfile = async () => {
       try {
-        if (!localStorage.getItem('accessToken')) { clearTimeout(timeoutId); navigate('/login'); return; }
-
+        // No localStorage token check here: a missing/expired access token
+        // 401s, the api interceptor silently refreshes it, and only a dead
+        // refresh token redirects to /login. Checking first would bounce
+        // the user before the interceptor gets its chance.
         const response = await api.get('/api/profile');
 
         // Name for the rail menu — non-critical, never blocks the page.
