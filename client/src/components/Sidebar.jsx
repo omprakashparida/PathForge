@@ -4,7 +4,8 @@ import UserMenu from './UserMenu';
 export const NAV_LINKS = [
   { to: '/dashboard', icon: '▦', label: 'Dashboard' },
   { to: '/roadmap', icon: '🗺', label: 'Roadmap' },
-  { to: '/coach', icon: '🤖', label: 'AI Coach' },
+  { to: '/coach', icon: '✨', label: 'Forge AI' },
+
   { to: '/resources', icon: '📚', label: 'Resources' },
   { to: '/profile', icon: '👤', label: 'Profile' },
 ];

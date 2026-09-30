@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const FEATURES = [
   { icon: '🎯', title: 'Personalized Roadmaps', text: 'AI-generated learning paths shaped around your goals, skills and schedule.' },
-  { icon: '🤖', title: 'AI Coach', text: 'Bite-sized coaching and daily tips that keep you moving forward.' },
+  { icon: '✨', title: 'Forge AI', text: 'Bite-sized coaching and daily tips that keep you moving forward.' },
   { icon: '🔥', title: 'Daily Streaks', text: 'Stay consistent and build learning habits that compound.' },
   { icon: '📚', title: 'Curated Resources', text: 'Hand-picked courses, docs and videos matched to your journey.' },
 ];
@@ -48,7 +48,7 @@ function Landing() {
           <div className="hero-list">
             {[
               { icon: '🎯', text: 'Personalized Roadmaps' },
-              { icon: '🤖', text: 'AI Coach Guidance' },
+              { icon: '✨', text: 'Forge AI Guidance' },
               { icon: '🔥', text: 'Daily Streak Tracking' },
             ].map((f) => (
               <div key={f.text} className="hero-item">

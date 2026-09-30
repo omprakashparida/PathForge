@@ -7,7 +7,7 @@ import { Dots } from '../components/AuthBits';
 
 const PERKS = [
   { icon: '🎯', text: 'Personalized Roadmaps' },
-  { icon: '🤖', text: 'AI Coach Guidance' },
+  { icon: '✨', text: 'Forge AI Guidance' },
   { icon: '🔥', text: 'Daily Streak Tracking' },
 ];
 
